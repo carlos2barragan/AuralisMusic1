@@ -1,44 +1,71 @@
 <app-header></app-header>
-<div class="profile-container">
-  <div class="profile-photo-container">
-    <img 
-      [src]="user.avatar ? user.avatar : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp'" 
-      alt="Foto de perfil" 
-      class="profile-photo" 
-    />
-  
-  
+<app-sidebar (songSelected)="playSong($event)"></app-sidebar>
+
+<main class="main-content">
+
+  <!-- ── Hero banner ── -->
+  <div class="profile-hero">
+    <div class="hero-gradient"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+
+    <div class="hero-body">
+      <!-- Avatar -->
+      <div class="avatar-wrap">
+        <img
+          [src]="user.avatar || defaultAvatar"
+          [alt]="user.nombre || 'Usuario'"
+          class="avatar"
+        />
+        <div class="avatar-ring ring-1"></div>
+        <div class="avatar-ring ring-2"></div>
+        <div class="avatar-glow"></div>
+      </div>
+
+      <!-- User info -->
+      <div class="hero-info">
+        <h1 class="hero-name">{{ user.nombre || 'Usuario' }}</h1>
+        <div class="hero-meta">
+          <span class="role-badge" [class.cantante-badge]="esCantante()">
+            {{ esCantante() ? '🎤 Artista' : '🎧 Oyente' }}
+          </span>
+          <span class="email-text">{{ user.email }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="user-info">
-    <h2 class="user-name">{{ user.nombre }}</h2>
-  </div>
+  <!-- ── Body ── -->
+  <div class="profile-body">
 
-  <!-- Solo se muestra si NO es cantante -->
-  <div *ngIf="!esCantante()" class="become-singer">
-    <p class="singer-question">¿Quieres ser cantante?</p>
-    <button (click)="sendRequest()" class="become-singer-btn">Enviar solicitud</button>
-  </div>
+    <!-- Action card -->
+    <div class="action-card" *ngIf="!esCantante()">
+      <div class="action-icon">🎤</div>
+      <div class="action-info">
+        <h3>¿Quieres compartir tu música?</h3>
+        <p>Conviértete en artista y sube tus canciones a Auralis</p>
+      </div>
+      <button (click)="sendRequest()" class="action-btn">Ser artista</button>
+    </div>
 
-  <!-- Solo se muestra si ES cantante -->
-  <div *ngIf="esCantante()" class="upload-song">
-    <p class="upload-song-question">¿Quieres subir una canción?</p>
-    <a href="/subir" class="upload-song-btn">Ir a subir canción</a>
-  </div>
+    <div class="action-card action-card-singer" *ngIf="esCantante()">
+      <div class="action-icon">🎵</div>
+      <div class="action-info">
+        <h3>¡Eres un artista!</h3>
+        <p>Comparte tu música con el mundo desde el panel de subida</p>
+      </div>
+      <a routerLink="/subir" class="action-btn">Subir canción</a>
+    </div>
 
-  <div class="user-playlists">
-    <h3 class="playlist-title">Tus Playlists</h3>
-  
-    <!-- Solo mostrar si hay playlists disponibles -->
-    <ul class="playlist-list" *ngIf="playlist && playlist.length > 0; else noPlaylists">
+    <!-- Playlists section -->
+    <section class="pl-section">
+      <div class="pl-section-header">
+        <h2 class="section-title">Mis Playlists</h2>
+      </div>
       <app-playlist></app-playlist>
+    </section>
 
-    </ul>
-  
-    <!-- Mensaje cuando no hay playlists -->
-    <ng-template #noPlaylists>
-      <p class="no-playlists">❌ No hay canciones en esta playlist.</p>
-    </ng-template>
   </div>
-  
-</div>
+</main>
+
+<app-music-player></app-music-player>
