@@ -1,17 +1,20 @@
 import express from "express";
 import cancionesController from "../Controladores/cancionesController.js";
-import { upload, uploadCloudinary } from "../config/multer.js"; 
+import { upload, uploadCloudinary } from "../config/multer.js";
+import tokenValido from "../middlewares/autenticacion.js";
 import verificarRoles from "../middlewares/verificarRole.js";
 
 const router = express.Router();
 
 router.post(
   "/canciones",
+  tokenValido,
+  verificarRoles(["cantante", "administrador"]),
   upload.fields([
     { name: "imageCover", maxCount: 1 },
     { name: "song", maxCount: 1 },
   ]),
-  uploadCloudinary, 
+  uploadCloudinary,
   async (req, res) => {
     try {
       await cancionesController.Crear(req, res);
@@ -29,7 +32,6 @@ router.get("/canciones", async (req, res) => {
   }
 });
 
-// ✅ Mover estas rutas arriba para evitar el error
 router.get("/canciones/mas-escuchadas", async (req, res) => {
   try {
     await cancionesController.ObtenerMasEscuchadas(req, res);
@@ -56,7 +58,8 @@ router.get("/canciones/:id", async (req, res) => {
 
 router.put(
   "/canciones/:id",
-  verificarRoles(["cantante"]),
+  tokenValido,
+  verificarRoles(["cantante", "administrador"]),
   upload.fields([
     { name: "imageCover", maxCount: 1 },
     { name: "song", maxCount: 1 },
@@ -71,7 +74,7 @@ router.put(
   }
 );
 
-router.delete("/canciones/:id", verificarRoles(["cantante"]), async (req, res) => {
+router.delete("/canciones/:id", tokenValido, verificarRoles(["cantante", "administrador"]), async (req, res) => {
   try {
     await cancionesController.Eliminar(req, res);
   } catch (error) {
