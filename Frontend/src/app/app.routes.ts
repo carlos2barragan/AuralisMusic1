@@ -12,6 +12,7 @@ import { VerificarComponent } from './pages/verificar/verificar.component';
 import { PrivatePlaylistComponent } from './pages/private-playlist/private-playlist.component';
 import { VerificacionExitosaComponent } from './pages/verificacion-exitosa/verificacion-exitosa.component';
 import { ArtistInfoComponent } from './pages/artist-info/artist-info.component';
+import { GenreComponent } from './pages/genre/genre.component';
 export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
   { path: 'playlist', component: Playlst, canActivate: [AuthGuard] },
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'playlist/:id', component: PrivatePlaylistComponent, canActivate: [AuthGuard] },
   { path: 'artist/:id', component: ArtistInfoComponent, canActivate: [AuthGuard] },
+  { path: 'genre/:name', component: GenreComponent, canActivate: [AuthGuard] },
   { path: 'subir', component: SubirCancionComponent, canActivate: [CantanteGuard] },           
   { path: 'verificar-email', component: VerificarEmailComponent }, // Ruta para la página de verificación
   { path: 'verificar/:token', component: VerificarComponent }, // Ruta para el proceso de verificación con token

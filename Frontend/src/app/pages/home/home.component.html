@@ -9,22 +9,60 @@
     <div class="amb-orb amb-3"></div>
   </div>
 
-  <!-- ── Compact hero ── -->
-  <section class="hero-strip">
-    <div class="hero-strip-inner">
-      <div class="hero-text">
-        <p class="strip-greeting">{{ greeting }}<span *ngIf="userName">, <strong>{{ userName }}</strong></span></p>
-        <h1 class="strip-title">¿Qué quieres escuchar?</h1>
-      </div>
-      <button class="strip-shuffle" (click)="playRandomSong()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16">
-          <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6"/>
-        </svg>
-        Aleatorio
-      </button>
+  <!-- ── Hero ── -->
+  <section class="hero" (mousemove)="onHeroMouseMove($event)" (mouseleave)="onHeroMouseLeave()">
+
+    <!-- Deep background layers -->
+    <div class="hero-bg">
+      <div class="hbg-orb hbg-1"></div>
+      <div class="hbg-orb hbg-2"></div>
+      <div class="hbg-orb hbg-3"></div>
+      <div class="hbg-grid"></div>
     </div>
 
-    <!-- Now playing bar inside hero (compact) -->
+    <!-- Floating 3D music notes -->
+    <div class="hero-floats" aria-hidden="true">
+      <span class="fn fn-1">♪</span>
+      <span class="fn fn-2">♫</span>
+      <span class="fn fn-3">♩</span>
+      <span class="fn fn-4">♬</span>
+      <span class="fn fn-5">🎵</span>
+      <span class="fn fn-6">♪</span>
+      <span class="fn fn-7">♫</span>
+    </div>
+
+    <!-- 3D parallax stage -->
+    <div class="hero-stage" [style.transform]="heroTransform">
+
+      <div class="hero-tag">
+        <span class="tag-pulse"></span>
+        Auralis Music
+      </div>
+
+      <p class="hero-greeting">
+        {{ greeting }}<span *ngIf="userName">, <strong class="greeting-name">{{ userName }}</strong></span>
+      </p>
+
+      <h1 class="hero-title">
+        <span class="ht-line ht-line-1">¿Qué quieres</span>
+        <span class="ht-line ht-line-2">
+          <span class="ht-word-em">escuchar</span>
+          <span class="ht-word-plain"> hoy?</span>
+        </span>
+      </h1>
+
+      <div class="hero-actions">
+        <button class="hero-btn-primary" (click)="playRandomSong()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" width="17" height="17">
+            <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6"/>
+          </svg>
+          Reproducción aleatoria
+        </button>
+        <span class="hero-hint">o explora más abajo</span>
+      </div>
+    </div>
+
+    <!-- Now playing bar -->
     <div class="now-bar" *ngIf="selectedArtist">
       <div class="nb-avatar-wrap">
         <img [src]="avatarUrl" [alt]="selectedArtist.nombre" class="nb-avatar"/>
@@ -33,7 +71,7 @@
       <div class="nb-info">
         <span class="nb-playing-label">
           <span class="pulse-dot"></span>
-          Reproduciendo
+          Reproduciendo ahora
         </span>
         <span class="nb-song">{{ currentSong?.titulo }}</span>
         <span class="nb-artist">{{ selectedArtist.nombre }}</span>

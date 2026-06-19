@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   quickItems: Cancion[] = [];
 
   readonly defaultAvatar = 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
+  heroTransform = '';
 
   constructor(private songService: SongService) {}
 
@@ -115,6 +116,18 @@ export class HomeComponent implements OnInit {
   }
 
   onSongSelected(song: Cancion) { this.playSong(song); }
+
+  onHeroMouseMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const x = ((e.clientX - left) / width  - 0.5) * 12;
+    const y = ((e.clientY - top)  / height - 0.5) * -8;
+    this.heroTransform = `perspective(1200px) rotateY(${x}deg) rotateX(${y}deg)`;
+  }
+
+  onHeroMouseLeave(): void {
+    this.heroTransform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
+  }
 
   get avatarUrl(): string { return this.selectedArtist?.avatar || this.defaultAvatar; }
 

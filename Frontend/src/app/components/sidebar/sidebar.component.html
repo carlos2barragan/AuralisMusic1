@@ -1,10 +1,16 @@
+<!-- Left-edge hot zone: opens sidebar when mouse reaches the left side of the screen -->
+<div class="edge-trigger" *ngIf="!isOpen" (mouseenter)="open()"></div>
+
 <!-- Backdrop -->
 <div class="sb-backdrop" [class.visible]="isOpen" (click)="close()"></div>
 
 <!-- Drawer -->
 <aside class="sidebar" [class.open]="isOpen">
 
-  <!-- Drawer header -->
+  <div class="sb-orb"></div>
+  <div class="sb-orb sb-orb-2"></div>
+
+  <!-- Header -->
   <div class="sb-header">
     <a routerLink="/home" class="sb-logo-link" (click)="close()">
       <img
@@ -13,107 +19,41 @@
         class="sb-logo"
       />
     </a>
-    <button class="sb-close" (click)="close()" aria-label="Cerrar menú">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+    <button class="sb-close" (click)="close()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
         <path d="M18 6L6 18M6 6l12 12"/>
       </svg>
     </button>
   </div>
 
-  <!-- Background glow -->
-  <div class="sb-orb"></div>
-  <div class="sb-orb sb-orb-2"></div>
+  <!-- Intro label -->
+  <div class="sb-intro">
+    <span class="sb-intro-title">Explorar géneros</span>
+    <span class="sb-intro-sub">Escucha música por estilo</span>
+  </div>
 
-  <!-- ── NAVIGATION ── -->
-  <nav class="nav-section">
-    <span class="nav-section-label">NAVEGACIÓN</span>
-
-    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-       class="nav-item" (click)="close()">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+  <!-- Genre grid -->
+  <div class="genre-grid" *ngIf="genres.length > 0">
+    <button
+      class="genre-card"
+      *ngFor="let g of genres; let i = index"
+      [style.--i]="i"
+      [style.background]="g.gradient"
+      (click)="goToGenre(g)">
+      <span class="gc-icon">{{ g.icon }}</span>
+      <span class="gc-name">{{ g.name }}</span>
+      <span class="gc-count">{{ g.count }} {{ g.count === 1 ? 'canción' : 'canciones' }}</span>
+      <div class="gc-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+          <path d="M9 18l6-6-6-6"/>
         </svg>
-      </span>
-      <span class="nav-label">Inicio</span>
-      <span class="nav-glow"></span>
-    </a>
-
-    <!-- Mis Playlists -->
-    <div class="nav-group" [class.open]="isPlaylistsOpen">
-      <button class="nav-item nav-trigger" (click)="togglePlaylists()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-          </svg>
-        </span>
-        <span class="nav-label">Mis Playlists</span>
-        <svg class="chevron" [class.rotated]="isPlaylistsOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M6 9l6 6 6-6"/>
-        </svg>
-        <span class="nav-glow"></span>
-      </button>
-
-      <div class="dropdown-panel">
-        <div class="dropdown-inner">
-          <ng-container *ngIf="playlists.length > 0; else noPlaylists">
-            <button
-              *ngFor="let p of playlists | slice:0:6; let i = index"
-              class="dp-item"
-              [style.--i]="i"
-              (click)="goToPlaylist(p._id)">
-              <span class="dp-bullet"></span>
-              <span class="dp-name">{{ p.nombre }}</span>
-              <span class="dp-badge">{{ p.canciones?.length || 0 }}</span>
-            </button>
-          </ng-container>
-          <ng-template #noPlaylists>
-            <span class="dp-empty">Sin playlists aún</span>
-          </ng-template>
-          <a routerLink="/playlist" class="dp-item dp-all" [style.--i]="playlists.length" (click)="isPlaylistsOpen=false; close()">
-            <span class="dp-bullet all">+</span>
-            <span class="dp-name">Ver todas</span>
-          </a>
-        </div>
       </div>
-    </div>
+    </button>
+  </div>
 
-    <!-- Mi Perfil -->
-    <div class="nav-group" [class.open]="isProfileOpen">
-      <button class="nav-item nav-trigger" (click)="toggleProfile()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-        </span>
-        <span class="nav-label">Mi Perfil</span>
-        <svg class="chevron" [class.rotated]="isProfileOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M6 9l6 6 6-6"/>
-        </svg>
-        <span class="nav-glow"></span>
-      </button>
-
-      <div class="dropdown-panel">
-        <div class="dropdown-inner">
-          <div class="profile-chip" *ngIf="user">
-            <img [src]="user.avatar || defaultAvatar" class="chip-avatar" [alt]="user.nombre"/>
-            <div class="chip-info">
-              <span class="chip-name">{{ user.nombre }}</span>
-              <span class="chip-role">{{ user.rol }}</span>
-            </div>
-          </div>
-          <a routerLink="/profile" class="dp-item" [style.--i]="0" (click)="isProfileOpen=false; close()">
-            <span class="dp-bullet"></span>
-            <span class="dp-name">Ver perfil</span>
-          </a>
-          <a *ngIf="esCantante" routerLink="/subir" class="dp-item" [style.--i]="1" (click)="isProfileOpen=false; close()">
-            <span class="dp-bullet"></span>
-            <span class="dp-name">Subir canción</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-  </nav>
+  <!-- Loading skeleton -->
+  <div class="genre-grid" *ngIf="genres.length === 0">
+    <div class="genre-skeleton" *ngFor="let i of [1,2,3,4,5,6]"></div>
+  </div>
 
 </aside>

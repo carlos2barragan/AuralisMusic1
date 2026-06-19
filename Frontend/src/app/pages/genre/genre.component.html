@@ -1,0 +1,83 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<main class="main-content">
+
+  <!-- Hero -->
+  <div class="genre-hero" [style.background]="meta.gradient">
+    <div class="hero-noise"></div>
+    <div class="hero-glow" [style.background]="'radial-gradient(ellipse 60% 80% at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)'"></div>
+    <div class="hero-body">
+      <span class="hero-icon">{{ meta.icon }}</span>
+      <div class="hero-text">
+        <span class="hero-label">Género</span>
+        <h1 class="hero-title">{{ genreName }}</h1>
+        <span class="hero-count" *ngIf="!loading">{{ songs.length }} {{ songs.length === 1 ? 'canción' : 'canciones' }}</span>
+      </div>
+      <button class="hero-play-all" (click)="songs.length && playSong(songs[0])" *ngIf="!loading && songs.length">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M5 3l14 9-14 9V3z"/></svg>
+        Reproducir todo
+      </button>
+    </div>
+  </div>
+
+  <!-- Song list -->
+  <div class="song-list-wrap">
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Cargando canciones...</span>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-state" *ngIf="!loading && songs.length === 0">
+      <span class="empty-icon">🎵</span>
+      <p>No hay canciones de <strong>{{ genreName }}</strong> todavía.</p>
+    </div>
+
+    <!-- Table -->
+    <div class="song-table" *ngIf="!loading && songs.length > 0">
+
+      <div class="table-head">
+        <span class="th-num">#</span>
+        <span class="th-title">Título</span>
+        <span class="th-album">Álbum</span>
+        <span class="th-dur">Reproducciones</span>
+      </div>
+
+      <div
+        class="song-row"
+        *ngFor="let song of songs; let i = index"
+        [class.active]="isCurrentSong(song)"
+        (click)="playSong(song)">
+
+        <div class="td-num">
+          <span class="num-val" *ngIf="!isCurrentSong(song)">{{ i + 1 }}</span>
+          <span class="num-bars" *ngIf="isCurrentSong(song)" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <span class="num-play">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </span>
+        </div>
+
+        <div class="td-title">
+          <div class="thumb-wrap">
+            <img *ngIf="getImageUrl(song)" [src]="getImageUrl(song)" [alt]="song.titulo" class="song-thumb"/>
+            <div class="thumb-fallback" *ngIf="!getImageUrl(song)">♪</div>
+          </div>
+          <div class="song-meta">
+            <span class="song-name" [class.gold]="isCurrentSong(song)">{{ song.titulo }}</span>
+            <span class="song-artist" (click)="goToArtist(song, $event)">{{ song.cantante?.cantante || '—' }}</span>
+          </div>
+        </div>
+
+        <span class="td-album">{{ song.album || '—' }}</span>
+        <span class="td-plays">{{ song.plays | number }}</span>
+      </div>
+
+    </div>
+  </div>
+
+</main>
