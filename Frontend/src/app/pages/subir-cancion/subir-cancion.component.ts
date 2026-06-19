@@ -60,7 +60,6 @@ export class SubirCancionComponent implements OnInit {
       this.archivoImagen = file;
     }
 
-    console.log(`📂 Archivo seleccionado (${tipo}):`, file.name);
   }
   subirCancion() {
     if (this.cancionForm.invalid || !this.archivoCancion) {
@@ -86,9 +85,7 @@ export class SubirCancionComponent implements OnInit {
     this.cargando = true;
   
     this.songService.subirCancion(formData).subscribe({
-      next: (res) => {
-        console.log("✅ Respuesta del backend:", res);
-        
+      next: () => {
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
@@ -103,9 +100,7 @@ export class SubirCancionComponent implements OnInit {
         this.archivoImagen = null;
         this.cargando = false;
       },
-      error: (err) => {
-        console.error('Error en la subida:', err);
-        
+      error: () => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
