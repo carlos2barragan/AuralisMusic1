@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { SongService } from '../../services/song.service';
 import { Cancion } from '../../models/cancion.model';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -12,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   templateUrl: './music-player.component.html',
   styleUrls: ['./music-player.component.css'],
-  imports: [CommonModule, HttpClientModule, FormsModule]
+  imports: [CommonModule, FormsModule]
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
   @Input() currentSong: Cancion | null = null;

@@ -2,14 +2,13 @@ import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SongService } from '../../services/song.service';
 import { PlaylistService } from '../../services/playlist.service';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-random-song-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './random-song-list.component.html',
   styleUrls: ['./random-song-list.component.css']
 })
