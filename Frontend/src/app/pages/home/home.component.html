@@ -3,14 +3,24 @@
 
 <main class="main-content">
 
+  <!-- Ambient background particles -->
+  <div class="ambient-layer" aria-hidden="true">
+    <div class="amb-orb amb-1"></div>
+    <div class="amb-orb amb-2"></div>
+    <div class="amb-orb amb-3"></div>
+  </div>
+
   <!-- Greeting -->
   <section class="greeting-section">
     <div class="greeting-text">
-      <h1 class="greeting-title">Bienvenido de nuevo</h1>
-      <p class="greeting-sub">¿Qué quieres escuchar hoy?</p>
+      <p class="greeting-time">{{ greeting }}<span *ngIf="userName">, {{ userName }}</span> 👋</p>
+      <h1 class="greeting-title">¿Qué quieres escuchar?</h1>
     </div>
     <button class="shuffle-btn" (click)="playRandomSong()">
-      🔀 Reproducción aleatoria
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6"/>
+      </svg>
+      Reproducción aleatoria
     </button>
   </section>
 
@@ -18,19 +28,29 @@
   <section class="now-playing-artist" *ngIf="selectedArtist">
     <div class="artist-avatar-wrap">
       <img [src]="avatarUrl" [alt]="selectedArtist.nombre" class="artist-avatar" />
+      <div class="artist-ring"></div>
       <div class="artist-glow"></div>
     </div>
     <div class="artist-details">
-      <span class="listening-label">Reproduciendo ahora</span>
+      <span class="listening-label">
+        <span class="pulse-dot"></span>
+        Reproduciendo ahora
+      </span>
       <h2 class="artist-name">{{ selectedArtist.nombre }}</h2>
       <span class="artist-song">{{ currentSong?.titulo }}</span>
+    </div>
+    <div class="waveform" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
     </div>
   </section>
 
   <!-- Más escuchadas -->
   <section class="songs-section" *ngIf="mostPlayedSongs.length > 0">
     <div class="section-header">
-      <h2 class="section-title">🔥 Más escuchadas</h2>
+      <h2 class="section-title">
+        <span class="section-icon">🔥</span>
+        Más escuchadas
+      </h2>
     </div>
     <app-most-played-songs
       [songs]="mostPlayedSongs"
@@ -41,7 +61,10 @@
   <!-- Recientes -->
   <section class="songs-section" *ngIf="recentSongs.length > 0">
     <div class="section-header">
-      <h2 class="section-title">🆕 Agregadas recientemente</h2>
+      <h2 class="section-title">
+        <span class="section-icon">✨</span>
+        Agregadas recientemente
+      </h2>
     </div>
     <app-recent-songs
       [songs]="recentSongs"
@@ -52,7 +75,10 @@
   <!-- Todas las canciones -->
   <section class="songs-section">
     <div class="section-header">
-      <h2 class="section-title">🎵 Todas las canciones</h2>
+      <h2 class="section-title">
+        <span class="section-icon">🎵</span>
+        Todas las canciones
+      </h2>
     </div>
     <app-random-song-list (songSelected)="onSongSelected($event)"></app-random-song-list>
   </section>

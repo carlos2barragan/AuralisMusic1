@@ -39,6 +39,20 @@ export class HomeComponent implements OnInit {
     this.songService.getRecentSongs().subscribe(songs => this.recentSongs = songs);
   }
 
+  get greeting(): string {
+    const h = new Date().getHours();
+    if (h >= 6 && h < 12) return 'Buenos días';
+    if (h >= 12 && h < 19) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
+
+  get userName(): string {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored)?.nombre?.split(' ')[0] || '' : '';
+    } catch { return ''; }
+  }
+
   playSong(song: Cancion) {
     if (!song) return;
     this.currentSong = song;
