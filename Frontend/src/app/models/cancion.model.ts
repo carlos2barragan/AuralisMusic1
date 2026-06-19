@@ -1,12 +1,14 @@
 export interface Cancion {
+  _id: string;
+  titulo: string;
+  cantante: {
     _id: string;
-    cantante: {
-      _id: string;
-      nombre: string;
-      imagen?: string; 
-    };
-    album: string;
-    genero: string;
-    imagen: string;
-    fileUrl: string;
-  }
+    cantante: string;
+    avatar?: string;
+  };
+  album: string;
+  genero: string;
+  imagen: string;
+  fileUrl: string;
+  plays: number;
+}
