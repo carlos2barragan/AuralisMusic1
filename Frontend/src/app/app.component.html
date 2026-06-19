@@ -1,1 +1,3 @@
-<router-outlet></router-outlet>
+<div class="app-host" [@pageAnim]="getRoute(outlet)">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>
