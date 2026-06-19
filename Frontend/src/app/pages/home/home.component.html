@@ -1,46 +1,66 @@
 <app-header></app-header>
+<app-sidebar (songSelected)="playSong($event)"></app-sidebar>
 
-<div class="home-container">
-  <!-- Sidebar a la izquierda -->
-  <div class="sidebar-container">
-    <app-sidebar (songSelected)="playSong($event)"></app-sidebar>
-  </div>
+<main class="main-content">
 
-  <!-- Contenido principal -->
-  <div class="content">
-    <!-- Lista de canciones aleatorias -->
-    <app-random-song-list (songSelected)="onSongSelected($event)"></app-random-song-list>
-
-    <!-- Información del artista -->
-    <app-artist-info 
-      *ngIf="selectedArtist"
-      [name]="selectedArtist.nombre" 
-      [image]="selectedArtist.avatar"
-      [bio]="'Este artista aún no tiene biografía.'">
-    </app-artist-info>
-
-    <div class="song-sections">
-      <!-- Canciones más escuchadas -->
-      <div class="most-played-container">
-        <h2>🔥 Más Escuchadas</h2>
-        <app-most-played-songs [songs]="mostPlayedSongs"></app-most-played-songs>
-      </div>
-    
-      <!-- Canciones más recientes (debajo de las más escuchadas) -->
-      <div class="recent-songs-container">
-        <h2>🆕 Recientemente Agregadas</h2>
-        <app-recent-songs [songs]="recentSongs"></app-recent-songs>
-      </div>
+  <!-- Greeting -->
+  <section class="greeting-section">
+    <div class="greeting-text">
+      <h1 class="greeting-title">Bienvenido de nuevo</h1>
+      <p class="greeting-sub">¿Qué quieres escuchar hoy?</p>
     </div>
-    
-<!-- Reproductor de música (si hay una canción seleccionada) -->
-<app-music-player 
-    *ngIf="showMusicPlayer" 
-    [currentSong]="currentSong" 
-    [isPlaying]="isPlaying">
+    <button class="shuffle-btn" (click)="playRandomSong()">
+      🔀 Reproducción aleatoria
+    </button>
+  </section>
+
+  <!-- Now playing artist -->
+  <section class="now-playing-artist" *ngIf="selectedArtist">
+    <div class="artist-avatar-wrap">
+      <img [src]="avatarUrl" [alt]="selectedArtist.nombre" class="artist-avatar" />
+      <div class="artist-glow"></div>
+    </div>
+    <div class="artist-details">
+      <span class="listening-label">Reproduciendo ahora</span>
+      <h2 class="artist-name">{{ selectedArtist.nombre }}</h2>
+      <span class="artist-song">{{ currentSong?.titulo }}</span>
+    </div>
+  </section>
+
+  <!-- Más escuchadas -->
+  <section class="songs-section" *ngIf="mostPlayedSongs.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">🔥 Más escuchadas</h2>
+    </div>
+    <app-most-played-songs
+      [songs]="mostPlayedSongs"
+      (songSelected)="playSong($event)">
+    </app-most-played-songs>
+  </section>
+
+  <!-- Recientes -->
+  <section class="songs-section" *ngIf="recentSongs.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">🆕 Agregadas recientemente</h2>
+    </div>
+    <app-recent-songs
+      [songs]="recentSongs"
+      (songSelected)="playSong($event)">
+    </app-recent-songs>
+  </section>
+
+  <!-- Todas las canciones -->
+  <section class="songs-section">
+    <div class="section-header">
+      <h2 class="section-title">🎵 Todas las canciones</h2>
+    </div>
+    <app-random-song-list (songSelected)="onSongSelected($event)"></app-random-song-list>
+  </section>
+
+</main>
+
+<app-music-player
+  *ngIf="showMusicPlayer"
+  [currentSong]="currentSong"
+  [isPlaying]="isPlaying">
 </app-music-player>
-
-
-  
-
-</div>

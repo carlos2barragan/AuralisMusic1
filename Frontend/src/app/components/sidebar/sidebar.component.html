@@ -1,38 +1,49 @@
-<div class="now-playing">
-  <p *ngIf="currentSong">🎵 Reproduciendo: {{ currentSong?.cancion }}</p>
-  <div #waveform class="waveform-container"></div>
-</div>
+<aside class="sidebar">
 
-<div class="sidebar" [class.expanded]="isExpanded">
-  <!-- Barra de búsqueda -->
-  <div class="search-bar">
-    <input 
-      type="text" 
-      [(ngModel)]="searchQuery" 
-      placeholder="Buscar canción..." 
-      [readonly]="!isSearchVisible" 
-      (click)="toggleSearch()" 
-      (input)="filterSongs()"
-    />
+  <nav class="nav-links">
+    <a routerLink="/home" class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Inicio</span>
+    </a>
+    <a routerLink="/playlist" class="nav-item">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Mis Playlists</span>
+    </a>
+    <a routerLink="/profile" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Perfil</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="search-section">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Buscar canción..."
+        (click)="toggleSearch()"
+        (input)="filterSongs()"
+      />
+    </div>
+
+    <ul class="search-results" *ngIf="isSearchVisible && filteredSongs.length > 0">
+      <li *ngFor="let song of filteredSongs | slice:0:8" class="result-item">
+        <img
+          *ngIf="song.imagen"
+          [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen"
+          [alt]="song.titulo"
+          class="result-img"
+        />
+        <div class="result-info">
+          <span class="result-title">{{ song.titulo || 'Sin título' }}</span>
+          <span class="result-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+        </div>
+        <button class="play-btn" title="Reproducir" (click)="playSong(song)">▶</button>
+      </li>
+    </ul>
   </div>
 
-  <!-- Lista de canciones -->
-  <ul class="song-list" *ngIf="isSearchVisible && filteredSongs.length > 0">
-    <li *ngFor="let song of filteredSongs | slice:0:6" class="song-item">
-      <img 
-        *ngIf="song.imagen" 
-        [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
-        [alt]="song.album || 'Sin título' + ' Cover'" 
-        class="song-image" 
-      />
-      <div class="song-info">
-        <h4>{{ song.album || 'Álbum desconocido' }}</h4>
-        <p>{{ song.cancion }}</p>
-      </div>
-      <div class="song-actions">
-        <button title="Reproducir" (click)="playSong(song)">▶️</button>
-        <button title="Añadir a tu playlist" (click)="addToPlaylist(song)">➕</button>
-      </div>
-    </li>
-  </ul>
-</div>
+</aside>

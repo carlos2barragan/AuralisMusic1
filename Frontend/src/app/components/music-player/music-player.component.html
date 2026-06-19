@@ -1,22 +1,20 @@
 <div class="player" *ngIf="currentSong">
-  <!-- Imagen de la canción -->
   <div class="song-details">
-    <img class="song-image" [src]="currentSong?.imagen || 'assets/default-image.jpg'" alt="Portada" />
+    <img class="song-image" [src]="currentSong?.imagen || 'assets/default-cover.jpg'" alt="Portada" />
     <div class="song-info">
-      <h4 *ngIf="currentSong?.album">{{ currentSong.album }}</h4>
+      <h4>{{ currentSong?.titulo || 'Sin título' }}</h4>
       <p *ngIf="currentSong?.cantante?.cantante">{{ currentSong.cantante.cantante }}</p>
     </div>
   </div>
 
-  <!-- Controles y barra de progreso -->
   <div class="player-controls">
     <div class="controls">
-      <button (click)="playRandom()" aria-label="Reproducir aleatorio">🔀</button>
-      <button (click)="prevSong()" aria-label="Canción anterior">⏮️</button>
-      <button (click)="togglePlay()" aria-label="Reproducir/Pausar">
-        {{ isPlaying ? '⏸️' : '▶️' }}
+      <button (click)="playRandom()" title="Aleatorio">🔀</button>
+      <button (click)="prevSong()" title="Anterior">⏮</button>
+      <button class="play-pause-btn" (click)="togglePlay()" title="{{ isPlaying ? 'Pausar' : 'Reproducir' }}">
+        {{ isPlaying ? '⏸' : '▶' }}
       </button>
-      <button (click)="nextSong()" aria-label="Siguiente canción">⏭️</button>
+      <button (click)="nextSong()" title="Siguiente">⏭</button>
     </div>
 
     <div class="progress-container">
@@ -26,10 +24,9 @@
     </div>
   </div>
 
-  <!-- Control de volumen -->
   <div class="volume-control">
-    <i>🎤</i> <!-- Icono de micrófono -->
-    <input 
+    <i>🔊</i>
+    <input
       type="range"
       min="0"
       max="1"
@@ -38,6 +35,4 @@
       (input)="adjustVolume()"
     />
   </div>
-  
 </div>
-

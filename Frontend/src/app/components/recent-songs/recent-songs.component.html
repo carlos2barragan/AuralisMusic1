@@ -1,11 +1,18 @@
-<div class="song-list">
-  <h2> Canciones Más Recientes</h2>
-  <ul>
-    <li *ngFor="let song of songs.slice(0, 4)">
-      <img [src]="song.imagen" [alt]="song.cantante.cantante" class="song-img">
-      <div>
-        <strong>{{ song.cantante.cantante }}</strong> - {{ song.album }}
+<div class="cards-row">
+  <div
+    *ngFor="let song of songs"
+    class="song-card"
+    (click)="songSelected.emit(song)"
+  >
+    <div class="card-img-wrap">
+      <img [src]="song.imagen || 'assets/default-cover.jpg'" [alt]="song.titulo" class="card-img" />
+      <div class="play-overlay">
+        <span class="play-icon">▶</span>
       </div>
-    </li>
-  </ul>
+    </div>
+    <div class="card-info">
+      <span class="card-title">{{ song.titulo }}</span>
+      <span class="card-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+    </div>
+  </div>
 </div>

@@ -1,11 +1,92 @@
-.song-list {
-    padding: 10px;
-    background:  #1b1b1b;
-    border-radius: 10px;
-  }
-  .song-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-  
+.cards-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a40 transparent;
+}
+
+.cards-row::-webkit-scrollbar { height: 4px; }
+.cards-row::-webkit-scrollbar-track { background: transparent; }
+.cards-row::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
+
+.song-card {
+  flex-shrink: 0;
+  width: 160px;
+  background: #1c1c2c;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.song-card:hover {
+  background: #242438;
+  transform: translateY(-3px);
+}
+
+.card-img-wrap {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.song-card:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-icon {
+  background: #B2A179;
+  color: #000;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding-left: 3px;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-artist {
+  font-size: 11px;
+  color: #8888a0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

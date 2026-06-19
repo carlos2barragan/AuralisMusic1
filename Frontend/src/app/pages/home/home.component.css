@@ -1,190 +1,159 @@
-/* Contenedor principal */
-.home-container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(to right, #000000, #000000);
-  color: white;
-  padding-bottom: 80px;
-  
-  position: relative;
-}
-
-app-random-song-list {
-  display: flex;
-  flex-direction: column; /* Asegura que las canciones se apilen correctamente */
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-}
-/* Contenedor del contenido principal */
-.content {
-  flex-grow: 1;
-  max-width: 1200px;
-  padding: 40px;
-  background-color: #000;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-/* Contenedor de la lista de canciones */
-.song-list-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Diseño en cuadritos */
-  gap: 15px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  background-color: #111;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 30px;
-  width: 90%;
-  max-width: 800px;
-  box-shadow: 0 4px 15px rgba(255, 138, 0, 0.2);
-  text-align: center;
-}
-
-.song-list-container h2 {
-  font-size: 22px;
-  margin-bottom: 15px;
-  color: #ff8a00;
-}
-
-/* Estilo para cada canción en cuadrito */
-.song-card {
-  background-color: #222;
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  box-shadow: 0 2px 8px rgba(255, 138, 0, 0.2);
-  transition: transform 0.2s ease-in-out;
-  gap: 10px;
-}
-
-.song-card:hover {
-  transform: scale(1.05);
-}
-
-/* Imagen de la canción */
-.song-card img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Contenedor de la info del cantante a la derecha */
-.song-info {
-  flex-grow: 1;
+.main-content {
+  margin-left: 240px;
+  margin-top: 64px;
+  padding-bottom: 110px;
+  min-height: calc(100vh - 64px);
+  background: #0d0d14;
   display: flex;
   flex-direction: column;
 }
 
-/* Texto dentro de la card */
-.song-card h3 {
-  font-size: 14px;
+/* Greeting */
+.greeting-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 40px 24px;
+  background: linear-gradient(180deg, #1a1620 0%, #0d0d14 100%);
+}
+
+.greeting-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px;
+  letter-spacing: -0.5px;
+}
+
+.greeting-sub {
+  font-size: 15px;
+  color: #8888a0;
   margin: 0;
 }
 
-.song-card p {
-  font-size: 12px;
-  color: #ccc;
-  margin: 2px 0;
-}
-
-/* Botón de Play */
-.song-play-button {
-  background: #ff8a00;
+.shuffle-btn {
+  background: #B2A179;
   border: none;
-  color: white;
-  padding: 5px 10px;
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 24px;
   font-size: 14px;
-  border-radius: 5px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
 }
 
-.song-play-button:hover {
-  background: #e67600;
+.shuffle-btn:hover {
+  background: #c9b99a;
+  transform: scale(1.03);
 }
 
-/* Contenedor de las listas de canciones más escuchadas y recientes */
-.song-sections {
+/* Now playing artist */
+.now-playing-artist {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Alinear a la izquierda */
+  align-items: center;
+  gap: 20px;
+  padding: 24px 40px;
+  background: linear-gradient(135deg, #1a1428 0%, #0d0d14 100%);
+  border-top: 1px solid #1e1e30;
+  border-bottom: 1px solid #1e1e30;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.artist-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.artist-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #B2A179;
+}
+
+.artist-glow {
   position: absolute;
-  left: 20px;
-  top: 10px;
-  z-index: 2; /* Evita que bloquee elementos interactivos */
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178,161,121,0.3) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-/* Contenedor para cada sección */
-.most-played-container, .recent-songs-container {
-  background-color: #111;
-  padding: 15px;
-  border-radius: 10px;
-  width: 250px; /* Tamaño más pequeño */
-  box-shadow: 0 4px 10px rgba(255, 138, 0, 0.2);
-  text-align: center;
-  margin-bottom: 20px;
-  pointer-events: none; /* Evita que bloquee clics en otros elementos */
-}
-
-.most-played-container h2, 
-.recent-songs-container h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #ff8a00;
-  pointer-events: auto; /* Permite interactuar con el texto */
-}
-
-/* Lista de canciones dentro de las secciones */
-.most-played-container .song-list, 
-.recent-songs-container .song-list {
-  list-style: none;
-  padding: 0;
+.artist-details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 
-/* 🎵 Media Queries para pantallas pequeñas */
+.listening-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #B2A179;
+  font-weight: 600;
+}
+
+.artist-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+
+.artist-song {
+  font-size: 13px;
+  color: #8888a0;
+}
+
+/* Sections */
+.songs-section {
+  padding: 32px 40px 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .home-container {
+  .main-content {
+    margin-left: 60px;
+  }
+
+  .greeting-section {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 20px 16px;
   }
 
-  .song-sections {
-    position: static;
-    width: 100%;
-    align-items: center;
+  .greeting-title {
+    font-size: 24px;
   }
 
-  .most-played-container, .recent-songs-container {
-    width: 90%;
+  .now-playing-artist {
+    padding: 16px 20px;
   }
 
-  .song-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .song-info {
-    align-items: center;
+  .songs-section {
+    padding: 24px 20px 0;
   }
 }
-
-

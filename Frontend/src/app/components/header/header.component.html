@@ -1,23 +1,34 @@
 <header class="header">
+  <a routerLink="/home" class="logo-link">
+    <img
+      src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
+      alt="Auralis"
+      class="logo"
+    />
+  </a>
 
-  <img src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png" 
-       alt="Logo" 
-       class="logo" />
-
-  <div class="logo"></div>
-
-  <a href="/home" class="btn">HOME</a>
-
-  <div class="header-buttons">
+  <div class="header-right">
     <div class="dropdown">
-      <button class="btn" (click)="toggleMenu()">MI CUENTA</button>
+      <button class="account-btn" (click)="toggleMenu()">
+        <span class="avatar-icon">♪</span>
+        <span class="account-label">Mi cuenta</span>
+        <span class="chevron" [class.open]="menuOpen">▾</span>
+      </button>
       <div class="dropdown-menu" [class.show]="menuOpen">
-        <a href="/profile" class="dropdown-item">Mi perfil</a>
-        <a href="/playlist" class="dropdown-item">Mi playlist</a>
-        <a (click)="logout()" class="dropdown-item">Cerrar sesión</a>
+        <a routerLink="/profile" class="dropdown-item" (click)="menuOpen = false">
+          <span class="item-icon">👤</span> Mi perfil
+        </a>
+        <a routerLink="/playlist" class="dropdown-item" (click)="menuOpen = false">
+          <span class="item-icon">🎵</span> Mis playlists
+        </a>
+        <a routerLink="/subir" class="dropdown-item" (click)="menuOpen = false">
+          <span class="item-icon">⬆️</span> Subir canción
+        </a>
+        <div class="divider"></div>
+        <a class="dropdown-item logout" (click)="logout()">
+          <span class="item-icon">🚪</span> Cerrar sesión
+        </a>
       </div>
     </div>
   </div>
-  
 </header>
-
