@@ -1,76 +1,98 @@
-<main>
-  <section id="register" class="d-flex flex-row">
+<div class="auth-scene" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
 
-    <div class="image-section1" 
-           style="background-image: url('https://res.cloudinary.com/dbt58u6ag/image/upload/v1740602019/uploads/fhy7kfl3vika7bmxfpg8.png'); 
-                  background-size: cover; 
-                  background-position: center;">
-      </div>
-    <div class="form-section">
-      <div class="image-section2" 
-      style="background-image: url('https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png'); 
-             background-size: cover; 
-             background-position: center;">
- </div>
-      
-      <div class="section-text-combo">
-        <h2>Registrarse</h2>
-      </div>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre</label>
-          <input 
-            type="text" 
-            id="nombre" 
-            class="form-control" 
-            formControlName="nombre" 
-            placeholder="" 
+  <!-- Background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+
+  <!-- Floating music notes -->
+  <span class="note n1">♬</span>
+  <span class="note n2">♪</span>
+  <span class="note n3">♫</span>
+  <span class="note n4">♩</span>
+  <span class="note n5">♬</span>
+
+  <!-- Grid lines -->
+  <div class="grid"></div>
+
+  <!-- 3D Card -->
+  <div class="card-perspective">
+    <div class="auth-card" [style.transform]="cardTransform">
+
+      <!-- Spinning decorative rings -->
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+
+      <!-- Glass card content -->
+      <div class="card-inner">
+        <div class="logo-wrap">
+          <img
+            src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
+            alt="Auralis"
+            class="logo"
           />
+          <div class="logo-glow"></div>
         </div>
-      
-        <div class="mb-3">
-          <label for="email" class="form-label">Correo Electrónico</label>
-          <input 
-            type="email" 
-            id="email" 
-            class="form-control" 
-            formControlName="email" 
-            placeholder="" 
-          />
-        </div>
-      
-        <div class="mb-3">
-          <label for="password" class="form-label">Contraseña</label>
-          <div class="input-container">
-            <input 
-              type="password" 
-              id="password"
-              class="form-control" 
-              formControlName="password" 
-              [type]="passwordVisible ? 'text' : 'password'" 
-              placeholder=""
+
+        <h1 class="card-title">Crear cuenta</h1>
+        <p class="card-subtitle">Únete y empieza a escuchar música</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+          <div class="field">
+            <input
+              type="text"
+              id="reg-nombre"
+              formControlName="nombre"
+              placeholder=" "
+              autocomplete="name"
             />
-            <span 
-              (click)="togglePasswordVisibility()" 
-              class="password-toggle"
-            >
-              {{ passwordVisible ? '🔓' : '🔒 ' }}
-            </span>
+            <label for="reg-nombre">Nombre</label>
+            <div class="field-line"></div>
           </div>
-        </div>
-        
-        
-      
-        
-        
-      
-        <button type="submit" class="btn btn-primary">Registrarse</button>
-      </form>
-      <div class="mt-3">
-        <p>¿Ya tienes una cuenta? <a [routerLink]="['/login']">Inicia sesión aquí</a></p>
+
+          <div class="field">
+            <input
+              type="email"
+              id="reg-email"
+              formControlName="email"
+              placeholder=" "
+              autocomplete="email"
+            />
+            <label for="reg-email">Email</label>
+            <div class="field-line"></div>
+          </div>
+
+          <div class="field">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              id="reg-password"
+              formControlName="password"
+              placeholder=" "
+              autocomplete="new-password"
+            />
+            <label for="reg-password">Contraseña</label>
+            <div class="field-line"></div>
+            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+              {{ passwordVisible ? '👁' : '👁‍🗨' }}
+            </button>
+          </div>
+
+          <button type="submit" class="submit-btn" [class.loading]="loading">
+            <span class="btn-text">{{ loading ? 'Registrando…' : 'Crear cuenta' }}</span>
+            <span class="btn-shine"></span>
+          </button>
+
+        </form>
+
+        <p class="switch-link">
+          ¿Ya tienes cuenta?
+          <a routerLink="/login">Inicia sesión</a>
+        </p>
       </div>
     </div>
-    
-  </section>
-</main>
+  </div>
 
+</div>

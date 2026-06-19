@@ -20,6 +20,21 @@ export class RegisterComponent {
   successMessage: string | null = null;
   passwordVisible: boolean = false;
   loading: boolean = false;
+  cardTransform: string = '';
+
+  onMouseMove(e: MouseEvent) {
+    const scene = e.currentTarget as HTMLElement;
+    const rect = scene.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const rotateX = (-y * 14).toFixed(2);
+    const rotateY = (x * 14).toFixed(2);
+    this.cardTransform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+  }
+
+  onMouseLeave() {
+    this.cardTransform = 'rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+  }
 
   constructor(
     private fb: FormBuilder,
