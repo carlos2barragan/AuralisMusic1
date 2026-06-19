@@ -6,7 +6,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
 
  const Registro = async (req, res) => {
   try {
-    const { nombre, email, password, rol } = req.body;
+    const { nombre, email, password } = req.body;
 
     if (!nombre || !email || !password) {
       return res.status(400).json({ message: "Todos los campos son obligatorios." });
@@ -18,7 +18,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const NuevoUsuario = new Usuario({ nombre, email, password: hashedPassword, rol: rol || "usuario" });
+    const NuevoUsuario = new Usuario({ nombre, email, password: hashedPassword, rol: "usuario" });
     await NuevoUsuario.save();
 
     res.status(201).json({ message: "Usuario Registrado", usuario: { id: NuevoUsuario._id, nombre, email, rol: NuevoUsuario.rol } });
