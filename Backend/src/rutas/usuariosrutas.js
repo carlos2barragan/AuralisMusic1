@@ -14,4 +14,9 @@ router.put("/Usuario/:id", tokenValido, usuariosController.actualizarUsuario);
 router.patch("/usuario/:id/rol", tokenValido, verificarRoles(["administrador"]), usuariosController.updateUserRole);
 router.delete("/Usuario/:id", tokenValido, verificarRoles(["administrador"]), usuariosController.eliminarUsuario);
 
+router.get("/Usuario/:id/stats", tokenValido, usuariosController.obtenerStats);
+router.post("/Usuario/:id/play", tokenValido, usuariosController.registrarPlay);
+router.patch("/Usuario/:id/config", tokenValido, usuariosController.actualizarConfig);
+router.patch("/Usuario/:id/password", tokenValido, usuariosController.cambiarPassword);
+
 export default router;

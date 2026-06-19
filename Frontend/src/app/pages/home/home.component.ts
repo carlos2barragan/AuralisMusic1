@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 import { RandomSongListComponent } from '../../components/random-song-list/random-song-list.component';
 import { MostPlayedSongsComponent } from '../../components/most-played-songs/most-played-songs.component';
 import { RecentSongsComponent } from '../../components/recent-songs/recent-songs.component';
@@ -14,9 +14,9 @@ import { Cancion } from '../../models/cancion.model';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     HeaderComponent,
     SidebarComponent,
-    MusicPlayerComponent,
     RandomSongListComponent,
     MostPlayedSongsComponent,
     RecentSongsComponent,
@@ -31,12 +31,50 @@ export class HomeComponent implements OnInit {
   selectedArtist: { nombre: string; avatar: string } | null = null;
   mostPlayedSongs: Cancion[] = [];
   recentSongs: Cancion[] = [];
+  recentlyPlayed: Cancion[] = [];
+  listenedArtists: any[] = [];
+  quickItems: Cancion[] = [];
+
+  readonly defaultAvatar = 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
 
   constructor(private songService: SongService) {}
 
   ngOnInit() {
-    this.songService.getMostPlayedSongs().subscribe(songs => this.mostPlayedSongs = songs);
+    this.songService.getMostPlayedSongs().subscribe(songs => {
+      this.mostPlayedSongs = songs;
+      this.buildQuickItems();
+      this.deriveArtists();
+    });
     this.songService.getRecentSongs().subscribe(songs => this.recentSongs = songs);
+    this.loadRecentlyPlayed();
+  }
+
+  private loadRecentlyPlayed(): void {
+    try {
+      this.recentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+      this.buildQuickItems();
+      this.deriveArtists();
+    } catch { this.recentlyPlayed = []; }
+  }
+
+  private buildQuickItems(): void {
+    const seen = new Set<string>();
+    const result: Cancion[] = [];
+    for (const s of [...this.recentlyPlayed, ...this.mostPlayedSongs]) {
+      const id = (s as any)._id;
+      if (id && !seen.has(id)) { seen.add(id); result.push(s); }
+      if (result.length >= 8) break;
+    }
+    this.quickItems = result;
+  }
+
+  private deriveArtists(): void {
+    const map = new Map<string, any>();
+    [...this.recentlyPlayed, ...this.mostPlayedSongs].forEach((s: any) => {
+      const c = s?.cantante;
+      if (c?._id && !map.has(c._id)) map.set(c._id, c);
+    });
+    this.listenedArtists = [...map.values()].slice(0, 8);
   }
 
   get greeting(): string {
@@ -60,28 +98,30 @@ export class HomeComponent implements OnInit {
     this.showMusicPlayer = true;
     this.songService.setCurrentSong(song);
     this.songService.setIsPlaying(true);
-
     this.selectedArtist = {
       nombre: song.cantante?.cantante || 'Artista desconocido',
-      avatar: song.cantante?.avatar || 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp',
+      avatar: song.cantante?.avatar || this.defaultAvatar,
     };
+    setTimeout(() => this.loadRecentlyPlayed(), 500);
   }
 
   playRandomSong() {
-    const all = [...this.mostPlayedSongs, ...this.recentSongs];
-    if (all.length === 0) return;
-    let song: Cancion;
-    do {
-      song = all[Math.floor(Math.random() * all.length)];
-    } while (song === this.currentSong && all.length > 1);
-    this.playSong(song);
+    const pool = [...this.mostPlayedSongs, ...this.recentSongs];
+    if (!pool.length) return;
+    let s: Cancion;
+    do { s = pool[Math.floor(Math.random() * pool.length)]; }
+    while (s === this.currentSong && pool.length > 1);
+    this.playSong(s);
   }
 
-  onSongSelected(song: Cancion) {
-    this.playSong(song);
-  }
+  onSongSelected(song: Cancion) { this.playSong(song); }
 
-  get avatarUrl(): string {
-    return this.selectedArtist?.avatar || 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
+  get avatarUrl(): string { return this.selectedArtist?.avatar || this.defaultAvatar; }
+
+  getImageUrl(song: any): string {
+    if (!song?.imagen) return '';
+    return song.imagen.startsWith('http')
+      ? song.imagen
+      : `https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/${song.imagen}`;
   }
 }

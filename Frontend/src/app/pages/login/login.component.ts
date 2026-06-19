@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +30,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alert: AlertService
   ) {}
 
   onMouseMove(e: MouseEvent) {
@@ -48,10 +49,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
     this.route.queryParams.subscribe(params => {
       if (params['verified']) {
-        Swal.fire('Cuenta Verificada', '✅ Ahora puedes iniciar sesión.', 'success');
+        this.alert.success('Cuenta verificada', 'Ahora puedes iniciar sesión.');
       }
     });
 
@@ -64,58 +64,40 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-  
+
       if (this.loginSubscription) {
         this.loginSubscription.unsubscribe();
       }
-  
+
       this.loginSubscription = this.authService.login(email, password).subscribe({
         next: (res) => {
-         
-  
           if (res.token && res.user) {
-            Swal.fire({
-              title: 'Inicio de sesión exitoso',
-              text: '✅ Redirigiendo a la página principal...',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false
-            });
-
-  
-  
-            this.router.navigate(['/home']).then((navigated) => {
+            this.alert.notify('success', 'Bienvenido de vuelta');
+            this.router.navigate(['/home']).then(navigated => {
               if (!navigated) {
-                Swal.fire('Error', '❌ No se pudo redirigir a la página principal.', 'error');
+                this.alert.error('Error', 'No se pudo redirigir a la página principal.');
               }
             });
           } else {
-            Swal.fire('Error', '⚠️ Respuesta inesperada del servidor.', 'warning');
+            this.alert.warning('Respuesta inesperada', 'El servidor devolvió una respuesta inválida.');
           }
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Ocurrió un error, intenta más tarde.';
           this.failedAttempts++;
-  
+
           if (this.failedAttempts > 2) {
-            Swal.fire({
-              title: '¿Olvidaste tu contraseña?',
-              text: 'Puedes restablecerla ahora.',
-              icon: 'info',
-              confirmButtonText: 'Restablecer',
-              showCancelButton: true
-            }).then((result) => {
-              if (result.isConfirmed) {
-                this.router.navigate(['/reset-password']);
-              }
-            });
+            this.alert.confirm('¿Olvidaste tu contraseña?', 'Puedes restablecerla ahora.', 'Restablecer')
+              .then(result => {
+                if (result.isConfirmed) this.router.navigate(['/reset-password']);
+              });
           } else {
-            Swal.fire('Error', '⚠️ Credenciales incorrectas.', 'error');
+            this.alert.error('Credenciales incorrectas', 'Verifica tu email y contraseña.');
           }
         }
       });
     } else {
-      Swal.fire('Error', '⚠️ Por favor, completa todos los campos correctamente.', 'error');
+      this.alert.warning('Campos incompletos', 'Por favor, completa todos los campos correctamente.');
     }
   }
 

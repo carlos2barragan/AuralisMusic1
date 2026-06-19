@@ -3,69 +3,323 @@
 
 <main class="main-content">
 
-  <!-- ── Hero banner ── -->
+  <!-- ── HERO ── -->
   <div class="profile-hero">
-    <div class="hero-gradient"></div>
+    <div class="hero-bg"></div>
     <div class="hero-orb hero-orb-1"></div>
     <div class="hero-orb hero-orb-2"></div>
 
     <div class="hero-body">
-      <!-- Avatar -->
-      <div class="avatar-wrap">
-        <img
-          [src]="user.avatar || defaultAvatar"
-          [alt]="user.nombre || 'Usuario'"
-          class="avatar"
-        />
-        <div class="avatar-ring ring-1"></div>
-        <div class="avatar-ring ring-2"></div>
+      <div class="avatar-scene">
+        <div class="avatar-ring ring-outer"></div>
+        <div class="avatar-ring ring-inner"></div>
         <div class="avatar-glow"></div>
+        <img [src]="user.avatar || defaultAvatar" [alt]="user.nombre || 'Usuario'" class="hero-avatar"/>
       </div>
-
-      <!-- User info -->
       <div class="hero-info">
         <h1 class="hero-name">{{ user.nombre || 'Usuario' }}</h1>
         <div class="hero-meta">
-          <span class="role-badge" [class.cantante-badge]="esCantante()">
+          <span class="role-badge" [class.badge-artist]="esCantante()">
             {{ esCantante() ? '🎤 Artista' : '🎧 Oyente' }}
+          </span>
+          <span class="plan-badge" [class.badge-premium]="user.plan === 'premium'">
+            {{ user.plan === 'premium' ? '⭐ Premium' : '🆓 Free' }}
           </span>
           <span class="email-text">{{ user.email }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Tab navigation -->
+    <nav class="profile-tabs">
+      <button class="tab-btn" [class.active]="activeSection==='perfil'" (click)="setSection('perfil')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Mi Perfil
+      </button>
+      <button class="tab-btn" [class.active]="activeSection==='stats'" (click)="setSection('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Estadísticas
+      </button>
+      <button class="tab-btn" [class.active]="activeSection==='plan'" (click)="setSection('plan')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Mi Plan
+      </button>
+      <button class="tab-btn" [class.active]="activeSection==='config'" (click)="setSection('config')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Configuración
+      </button>
+      <button class="tab-btn" [class.active]="activeSection==='privacidad'" (click)="setSection('privacidad')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Privacidad
+      </button>
+    </nav>
   </div>
 
-  <!-- ── Body ── -->
+  <!-- ── CONTENT ── -->
   <div class="profile-body">
 
-    <!-- Action card -->
-    <div class="action-card" *ngIf="!esCantante()">
-      <div class="action-icon">🎤</div>
-      <div class="action-info">
-        <h3>¿Quieres compartir tu música?</h3>
-        <p>Conviértete en artista y sube tus canciones a Auralis</p>
+    <!-- ────── PERFIL ────── -->
+    <section class="section-panel" *ngIf="activeSection==='perfil'">
+      <!-- Artist / listener action card -->
+      <div class="action-card" *ngIf="!esCantante()">
+        <div class="ac-icon">🎤</div>
+        <div class="ac-text">
+          <h3>¿Quieres compartir tu música?</h3>
+          <p>Conviértete en artista y sube tus canciones a Auralis</p>
+        </div>
+        <button (click)="sendRequest()" class="ac-btn">Ser artista</button>
       </div>
-      <button (click)="sendRequest()" class="action-btn">Ser artista</button>
-    </div>
-
-    <div class="action-card action-card-singer" *ngIf="esCantante()">
-      <div class="action-icon">🎵</div>
-      <div class="action-info">
-        <h3>¡Eres un artista!</h3>
-        <p>Comparte tu música con el mundo desde el panel de subida</p>
+      <div class="action-card action-card-artist" *ngIf="esCantante()">
+        <div class="ac-icon">🎵</div>
+        <div class="ac-text">
+          <h3>¡Eres un artista en Auralis!</h3>
+          <p>Sube canciones y comparte tu música con el mundo</p>
+        </div>
+        <a routerLink="/subir" class="ac-btn">Subir canción</a>
       </div>
-      <a routerLink="/subir" class="action-btn">Subir canción</a>
-    </div>
 
-    <!-- Playlists section -->
-    <section class="pl-section">
-      <div class="pl-section-header">
+      <!-- Playlists -->
+      <div class="section-header">
         <h2 class="section-title">Mis Playlists</h2>
       </div>
       <app-playlist></app-playlist>
     </section>
 
+    <!-- ────── ESTADÍSTICAS ────── -->
+    <section class="section-panel" *ngIf="activeSection==='stats'">
+      <div class="loading-row" *ngIf="statsLoading">
+        <div class="mini-spinner"></div>
+        <span>Cargando estadísticas...</span>
+      </div>
+
+      <ng-container *ngIf="!statsLoading && stats">
+        <!-- Stat cards row -->
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-icon">🎵</div>
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Canciones escuchadas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏱</div>
+            <div class="stat-value">{{ formatTime(stats.tiempoMinutos) }}</div>
+            <div class="stat-label">Tiempo escuchado</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🎤</div>
+            <div class="stat-value">{{ stats.artistasUnicos }}</div>
+            <div class="stat-label">Artistas distintos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">{{ stats.numPlaylists }}</div>
+            <div class="stat-label">Playlists creadas</div>
+          </div>
+        </div>
+
+        <!-- Top section -->
+        <div class="stats-row">
+          <!-- Favorite info -->
+          <div class="stats-box">
+            <h3 class="box-title">Tus favoritos</h3>
+            <div class="fav-item" *ngIf="stats.favArtista">
+              <div class="fav-icon">🎤</div>
+              <div class="fav-info">
+                <span class="fav-label">Artista favorito</span>
+                <span class="fav-value">{{ stats.favArtista }}</span>
+                <span class="fav-sub">{{ stats.artTopCount }} reproducciones</span>
+              </div>
+            </div>
+            <div class="fav-item" *ngIf="stats.favGenero">
+              <div class="fav-icon">🎸</div>
+              <div class="fav-info">
+                <span class="fav-label">Género favorito</span>
+                <span class="fav-value">{{ stats.favGenero }}</span>
+              </div>
+            </div>
+            <div class="empty-fav" *ngIf="!stats.favArtista && !stats.favGenero">
+              <p>Escucha música para ver tus favoritos aquí</p>
+            </div>
+          </div>
+
+          <!-- Genre chart -->
+          <div class="stats-box" *ngIf="stats.genreChart?.length">
+            <h3 class="box-title">Géneros más escuchados</h3>
+            <div class="genre-bar-row" *ngFor="let g of stats.genreChart">
+              <span class="genre-name">{{ g.nombre }}</span>
+              <div class="genre-bar">
+                <div class="genre-fill" [style.width.%]="getStatPercent(g.count)"></div>
+              </div>
+              <span class="genre-count">{{ g.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent plays -->
+        <div class="stats-box" *ngIf="stats.recientes?.length">
+          <h3 class="box-title">Últimas reproducciones</h3>
+          <div class="recent-row" *ngFor="let r of stats.recientes">
+            <div class="recent-icon">♪</div>
+            <div class="recent-info">
+              <span class="recent-title">{{ r.titulo }}</span>
+              <span class="recent-artist">{{ r.cantante }}</span>
+            </div>
+            <span class="recent-time">{{ r.fecha | date:'d MMM' }}</span>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-stats" *ngIf="stats.total === 0">
+          <div class="empty-icon">📊</div>
+          <p>¡Empieza a escuchar música para ver tus estadísticas!</p>
+        </div>
+      </ng-container>
+
+      <div class="empty-stats" *ngIf="!statsLoading && !stats">
+        <div class="empty-icon">⚠️</div>
+        <p>No se pudieron cargar las estadísticas.</p>
+      </div>
+    </section>
+
+    <!-- ────── MI PLAN ────── -->
+    <section class="section-panel" *ngIf="activeSection==='plan'">
+      <div class="plan-grid">
+        <!-- Free card -->
+        <div class="plan-card" [class.current-plan]="user.plan !== 'premium'">
+          <div class="plan-tag" *ngIf="user.plan !== 'premium'">Plan actual</div>
+          <div class="plan-name">Free</div>
+          <div class="plan-price"><span class="price-val">$0</span><span class="price-per">/mes</span></div>
+          <ul class="plan-features">
+            <li class="feat ok">Acceso a todas las canciones</li>
+            <li class="feat ok">Crear playlists</li>
+            <li class="feat ok">Búsqueda de canciones</li>
+            <li class="feat no">Sin anuncios</li>
+            <li class="feat no">Descarga offline</li>
+            <li class="feat no">Audio de alta calidad</li>
+            <li class="feat no">Estadísticas avanzadas</li>
+          </ul>
+        </div>
+
+        <!-- Premium card -->
+        <div class="plan-card plan-premium" [class.current-plan]="user.plan === 'premium'">
+          <div class="plan-tag premium-tag" *ngIf="user.plan === 'premium'">Plan actual</div>
+          <div class="plan-badge-gem">⭐</div>
+          <div class="plan-name">Premium</div>
+          <div class="plan-price"><span class="price-val">$9.99</span><span class="price-per">/mes</span></div>
+          <ul class="plan-features">
+            <li class="feat ok">Acceso a todas las canciones</li>
+            <li class="feat ok">Crear playlists</li>
+            <li class="feat ok">Búsqueda de canciones</li>
+            <li class="feat ok">Sin anuncios</li>
+            <li class="feat ok">Descarga offline</li>
+            <li class="feat ok">Audio de alta calidad</li>
+            <li class="feat ok">Estadísticas avanzadas</li>
+          </ul>
+          <button class="upgrade-btn" *ngIf="user.plan !== 'premium'">Mejorar a Premium</button>
+          <div class="current-label" *ngIf="user.plan === 'premium'">✓ Plan activo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── CONFIGURACIÓN ────── -->
+    <section class="section-panel" *ngIf="activeSection==='config'">
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="settings-form">
+        <h3 class="form-section-title">Información personal</h3>
+
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" formControlName="nombre" placeholder="Tu nombre"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" formControlName="email" placeholder="tu@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL de avatar</label>
+          <input class="form-input" type="url" formControlName="avatar" placeholder="https://..."/>
+        </div>
+
+        <button type="submit" class="save-btn" [disabled]="profileForm.invalid || savingProfile">
+          <span *ngIf="!savingProfile">Guardar cambios</span>
+          <span *ngIf="savingProfile">Guardando...</span>
+        </button>
+      </form>
+
+      <div class="settings-divider"></div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="settings-form">
+        <h3 class="form-section-title">Cambiar contraseña</h3>
+        <div class="form-group">
+          <label class="form-label">Contraseña actual</label>
+          <input class="form-input" type="password" formControlName="passwordActual" placeholder="••••••••"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nueva contraseña</label>
+          <input class="form-input" type="password" formControlName="passwordNueva" placeholder="••••••••"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmar nueva contraseña</label>
+          <input class="form-input" type="password" formControlName="passwordConfirm" placeholder="••••••••"/>
+        </div>
+        <button type="submit" class="save-btn" [disabled]="passwordForm.invalid || savingPassword">
+          <span *ngIf="!savingPassword">Cambiar contraseña</span>
+          <span *ngIf="savingPassword">Cambiando...</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- ────── PRIVACIDAD ────── -->
+    <section class="section-panel" *ngIf="activeSection==='privacidad'">
+      <h3 class="form-section-title">Configuración de privacidad</h3>
+
+      <div class="privacy-items">
+        <div class="priv-item">
+          <div class="priv-text">
+            <span class="priv-title">Perfil público</span>
+            <span class="priv-desc">Otros usuarios pueden ver tu perfil y playlists</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" [(ngModel)]="config.perfilPublico" (change)="saveConfig()"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="priv-item">
+          <div class="priv-text">
+            <span class="priv-title">Mostrar historial de escucha</span>
+            <span class="priv-desc">Comparte tu actividad musical con otros</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" [(ngModel)]="config.mostrarHistorial" (change)="saveConfig()"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="priv-item">
+          <div class="priv-text">
+            <span class="priv-title">Notificaciones por email</span>
+            <span class="priv-desc">Recibe noticias sobre nuevas canciones y artistas</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" [(ngModel)]="config.notificaciones" (change)="saveConfig()"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <h3 class="form-section-title danger-title">Zona de peligro</h3>
+        <div class="danger-item">
+          <div class="priv-text">
+            <span class="priv-title">Eliminar cuenta</span>
+            <span class="priv-desc">Esta acción es permanente e irreversible</span>
+          </div>
+          <button class="danger-btn" disabled>Eliminar cuenta</button>
+        </div>
+      </div>
+    </section>
+
   </div>
 </main>
 
-<app-music-player></app-music-player>
+

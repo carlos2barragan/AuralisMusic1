@@ -6,14 +6,13 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlaylistUserComponent } from '../../components/playlist-user/playlist-user.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
 @Component({
   standalone: true,
   selector: 'app-private-playlist',
   templateUrl: './private-playlist.component.html',
   styleUrls: ['./private-playlist.component.css'],
-  imports: [CommonModule, HeaderComponent, PlaylistUserComponent, SidebarComponent, MusicPlayerComponent]
+  imports: [CommonModule, HeaderComponent, PlaylistUserComponent, SidebarComponent]
 })
 export class PrivatePlaylistComponent implements OnInit {
   playlist: any = null;

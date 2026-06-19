@@ -1,32 +1,52 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import "dotenv/config";
 import Canciones from "../Modelos/cancionesModelos.js";
 import Cantante from "../Modelos/cantanteModelos.js";
+import connectDB from "../config/database.js";
 
-dotenv.config();
-
-if (!process.env.MONGODB_URI_LOCAL) {
-  console.error("No se encontró la URI de conexión a MongoDB. Revisa tu archivo .env");
-  process.exit(1);
-}
+const AUDIO_BASE = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-";
+const IMG_BASE   = "https://picsum.photos/seed/";
 
 const canciones = [
-  {
-    cantante: "Billie Eilish",
-    titulo: "Bad Guy",
-    album: "When We All Fall Asleep, Where Do We Go?",
-    genero: "Pop Alternativo",
-    imagen: "https://example.com/bad-guy.jpg",
-    fileUrl: "https://example.com/bad-guy.mp3",
-  },
-  {
-    cantante: "The Weeknd",
-    titulo: "Save Your Tears",
-    album: "After Hours",
-    genero: "R&B",
-    imagen: "https://example.com/save-your-tears.jpg",
-    fileUrl: "https://example.com/save-your-tears.mp3",
-  },
+  // Bad Bunny
+  { cantante: "Bad Bunny", titulo: "Un Verano Sin Ti", album: "Un Verano Sin Ti", genero: "Reggaetón", imagen: `${IMG_BASE}bb1/300/300`, fileUrl: `${AUDIO_BASE}1.mp3`, plays: 8420 },
+  { cantante: "Bad Bunny", titulo: "Tití Me Preguntó", album: "Un Verano Sin Ti", genero: "Reggaetón", imagen: `${IMG_BASE}bb2/300/300`, fileUrl: `${AUDIO_BASE}2.mp3`, plays: 7800 },
+
+  // The Weeknd
+  { cantante: "The Weeknd", titulo: "Blinding Lights", album: "After Hours", genero: "Synth-pop", imagen: `${IMG_BASE}tw1/300/300`, fileUrl: `${AUDIO_BASE}3.mp3`, plays: 9200 },
+  { cantante: "The Weeknd", titulo: "Save Your Tears", album: "After Hours", genero: "R&B", imagen: `${IMG_BASE}tw2/300/300`, fileUrl: `${AUDIO_BASE}4.mp3`, plays: 6500 },
+
+  // Shakira
+  { cantante: "Shakira", titulo: "Hips Don't Lie", album: "Oral Fixation Vol. 2", genero: "Pop Latino", imagen: `${IMG_BASE}sh1/300/300`, fileUrl: `${AUDIO_BASE}5.mp3`, plays: 5900 },
+  { cantante: "Shakira", titulo: "Waka Waka", album: "Sale el Sol", genero: "Pop Latino", imagen: `${IMG_BASE}sh2/300/300`, fileUrl: `${AUDIO_BASE}6.mp3`, plays: 7200 },
+
+  // Eminem
+  { cantante: "Eminem", titulo: "Lose Yourself", album: "8 Mile", genero: "Hip-Hop", imagen: `${IMG_BASE}em1/300/300`, fileUrl: `${AUDIO_BASE}7.mp3`, plays: 8100 },
+  { cantante: "Eminem", titulo: "Not Afraid", album: "Recovery", genero: "Hip-Hop", imagen: `${IMG_BASE}em2/300/300`, fileUrl: `${AUDIO_BASE}8.mp3`, plays: 4300 },
+
+  // Coldplay
+  { cantante: "Coldplay", titulo: "Yellow", album: "Parachutes", genero: "Rock Alternativo", imagen: `${IMG_BASE}cp1/300/300`, fileUrl: `${AUDIO_BASE}9.mp3`, plays: 6700 },
+  { cantante: "Coldplay", titulo: "The Scientist", album: "A Rush of Blood to the Head", genero: "Rock Alternativo", imagen: `${IMG_BASE}cp2/300/300`, fileUrl: `${AUDIO_BASE}10.mp3`, plays: 5400 },
+
+  // Billie Eilish
+  { cantante: "Billie Eilish", titulo: "Bad Guy", album: "When We All Fall Asleep", genero: "Pop Alternativo", imagen: `${IMG_BASE}be1/300/300`, fileUrl: `${AUDIO_BASE}11.mp3`, plays: 7600 },
+  { cantante: "Billie Eilish", titulo: "Happier Than Ever", album: "Happier Than Ever", genero: "Pop", imagen: `${IMG_BASE}be2/300/300`, fileUrl: `${AUDIO_BASE}12.mp3`, plays: 4900 },
+
+  // Karol G
+  { cantante: "Karol G", titulo: "Bichota", album: "KG0516", genero: "Reggaetón", imagen: `${IMG_BASE}kg1/300/300`, fileUrl: `${AUDIO_BASE}13.mp3`, plays: 6200 },
+  { cantante: "Karol G", titulo: "Provenza", album: "Mañana Será Bonito", genero: "Reggaetón", imagen: `${IMG_BASE}kg2/300/300`, fileUrl: `${AUDIO_BASE}14.mp3`, plays: 5800 },
+
+  // Rauw Alejandro
+  { cantante: "Rauw Alejandro", titulo: "Todo De Ti", album: "Vice Versa", genero: "R&B Urbano", imagen: `${IMG_BASE}ra1/300/300`, fileUrl: `${AUDIO_BASE}15.mp3`, plays: 5100 },
+  { cantante: "Rauw Alejandro", titulo: "Lokera", album: "Vice Versa", genero: "Reggaetón", imagen: `${IMG_BASE}ra2/300/300`, fileUrl: `${AUDIO_BASE}16.mp3`, plays: 4700 },
+
+  // J Balvin
+  { cantante: "J Balvin", titulo: "Mi Gente", album: "Vibras", genero: "Reggaetón", imagen: `${IMG_BASE}jb1/300/300`, fileUrl: `${AUDIO_BASE}1.mp3`, plays: 8900 },
+  { cantante: "J Balvin", titulo: "Reggaetón", album: "Energía", genero: "Reggaetón", imagen: `${IMG_BASE}jb2/300/300`, fileUrl: `${AUDIO_BASE}2.mp3`, plays: 3900 },
+
+  // Dua Lipa
+  { cantante: "Dua Lipa", titulo: "Levitating", album: "Future Nostalgia", genero: "Pop / Disco", imagen: `${IMG_BASE}dl1/300/300`, fileUrl: `${AUDIO_BASE}3.mp3`, plays: 7100 },
+  { cantante: "Dua Lipa", titulo: "Don't Start Now", album: "Future Nostalgia", genero: "Pop / Disco", imagen: `${IMG_BASE}dl2/300/300`, fileUrl: `${AUDIO_BASE}4.mp3`, plays: 6400 },
 ];
 
 const buscarOCrearCantante = async (nombre) => {
@@ -34,37 +54,47 @@ const buscarOCrearCantante = async (nombre) => {
   if (!cantante) {
     cantante = new Cantante({ cantante: nombre.trim() });
     await cantante.save();
-    console.log(`Cantante creado: ${nombre}`);
+    console.log(`  [Seeder] Cantante creado: ${nombre}`);
   }
   return cantante;
 };
 
 const cancionesSeeder = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI_LOCAL);
-    console.log("Conectado a la base de datos");
+    await connectDB();
 
-    for (const cancion of canciones) {
-      const cantante = await buscarOCrearCantante(cancion.cantante);
+    await Canciones.deleteMany();
+    console.log("[Seeder] Canciones eliminadas.");
 
-      const nuevaCancion = new Canciones({
+    // Limpiar el array de canciones de todos los cantantes
+    await Cantante.updateMany({}, { $set: { canciones: [] } });
+
+    for (const datos of canciones) {
+      const cantante = await buscarOCrearCantante(datos.cantante);
+
+      const nueva = await Canciones.create({
         cantante: cantante._id,
-        titulo: cancion.titulo,
-        album: cancion.album,
-        genero: cancion.genero,
-        imagen: cancion.imagen,
-        fileUrl: cancion.fileUrl,
+        titulo: datos.titulo,
+        album: datos.album,
+        genero: datos.genero,
+        imagen: datos.imagen,
+        fileUrl: datos.fileUrl,
+        plays: datos.plays,
       });
 
-      await nuevaCancion.save();
-      console.log(`Canción guardada: ${cancion.titulo}`);
+      await Cantante.findByIdAndUpdate(cantante._id, {
+        $push: { canciones: nueva._id }
+      });
+
+      console.log(`  [Seeder] Canción: "${datos.titulo}" — ${datos.cantante}`);
     }
 
-    console.log("Seeding completado");
+    console.log(`\n[Seeder] ✅ ${canciones.length} canciones insertadas correctamente.`);
   } catch (error) {
-    console.error("Error en el seeding:", error);
+    console.error("[Seeder] Error:", error);
   } finally {
-    mongoose.connection.close();
+    await mongoose.connection.close();
+    console.log("[Seeder] Conexión cerrada.");
   }
 };
 

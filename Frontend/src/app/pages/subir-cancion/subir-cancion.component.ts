@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SongService } from '../../services/song.service';
 import { HeaderComponent } from "../../components/header/header.component";
-import Swal from 'sweetalert2';
+import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,10 +18,15 @@ export class SubirCancionComponent implements OnInit {
   cancionForm: FormGroup;
   cargando: boolean = false;
   mensaje: string = '';
-  archivoCancion: File | null = null;  
-  archivoImagen: File | null = null; 
+  archivoCancion: File | null = null;
+  archivoImagen: File | null = null;
 
-  constructor(private fb: FormBuilder, private songService: SongService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private songService: SongService,
+    private router: Router,
+    private alert: AlertService
+  ) {
     this.cancionForm = this.fb.group({
       cantante: ['', Validators.required],
       cancion: ['', Validators.required],
@@ -32,13 +37,11 @@ export class SubirCancionComponent implements OnInit {
 
   ngOnInit() {}
 
- 
   seleccionarArchivo(event: any, tipo: 'song' | 'image') {
     const file = event.target.files[0];
-
     if (!file) return;
 
-    const maxSize = 10 * 1024 * 1024; 
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       this.mensaje = `El archivo ${file.name} es demasiado grande.`;
       return;
@@ -56,62 +59,43 @@ export class SubirCancionComponent implements OnInit {
 
     if (tipo === 'song') {
       this.archivoCancion = file;
-    } else if (tipo === 'image') {
+    } else {
       this.archivoImagen = file;
     }
-
   }
+
   subirCancion() {
     if (this.cancionForm.invalid || !this.archivoCancion) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos incompletos',
-        text: 'Por favor, complete todos los campos y seleccione una canción.',
-      });
+      this.alert.warning('Campos incompletos', 'Por favor, completa todos los campos y selecciona una canción.');
       return;
     }
-  
+
     const formData = new FormData();
-    formData.append("cantante", this.cancionForm.get("cantante")?.value);
-    formData.append("cancion", this.cancionForm.get("cancion")?.value);
-    formData.append("album", this.cancionForm.get("album")?.value);
-    formData.append("genero", this.cancionForm.get("genero")?.value);
-    formData.append("song", this.archivoCancion!);
-  
+    formData.append('cantante', this.cancionForm.get('cantante')?.value);
+    formData.append('cancion', this.cancionForm.get('cancion')?.value);
+    formData.append('album', this.cancionForm.get('album')?.value);
+    formData.append('genero', this.cancionForm.get('genero')?.value);
+    formData.append('song', this.archivoCancion!);
+
     if (this.archivoImagen) {
-      formData.append("imageCover", this.archivoImagen);
+      formData.append('imageCover', this.archivoImagen);
     }
-  
+
     this.cargando = true;
-  
+
     this.songService.subirCancion(formData).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Éxito!',
-          text: 'La canción se ha subido correctamente.',
-          confirmButtonText: 'Ir a la Home'
-        }).then(() => {
-          this.router.navigate(['/home']);
-        });
-  
+        this.alert.success('¡Canción subida!', 'La canción se publicó correctamente.')
+          .then(() => this.router.navigate(['/home']));
         this.cancionForm.reset();
         this.archivoCancion = null;
         this.archivoImagen = null;
         this.cargando = false;
       },
       error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un problema al subir la canción. Intente nuevamente.',
-        });
-  
+        this.alert.error('Error al subir', 'Hubo un problema al subir la canción. Intenta nuevamente.');
         this.cargando = false;
       },
     });
   }
-  
-  
-  
 }

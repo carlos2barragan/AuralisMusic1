@@ -1,14 +1,35 @@
-<aside class="sidebar">
+<!-- Backdrop -->
+<div class="sb-backdrop" [class.visible]="isOpen" (click)="close()"></div>
+
+<!-- Drawer -->
+<aside class="sidebar" [class.open]="isOpen">
+
+  <!-- Drawer header -->
+  <div class="sb-header">
+    <a routerLink="/home" class="sb-logo-link" (click)="close()">
+      <img
+        src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
+        alt="Auralis"
+        class="sb-logo"
+      />
+    </a>
+    <button class="sb-close" (click)="close()" aria-label="Cerrar menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
 
   <!-- Background glow -->
   <div class="sb-orb"></div>
+  <div class="sb-orb sb-orb-2"></div>
 
   <!-- ── NAVIGATION ── -->
   <nav class="nav-section">
     <span class="nav-section-label">NAVEGACIÓN</span>
 
-    <!-- Inicio -->
-    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-item">
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+       class="nav-item" (click)="close()">
       <span class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
@@ -18,7 +39,7 @@
       <span class="nav-glow"></span>
     </a>
 
-    <!-- Mis Playlists — dropdown -->
+    <!-- Mis Playlists -->
     <div class="nav-group" [class.open]="isPlaylistsOpen">
       <button class="nav-item nav-trigger" (click)="togglePlaylists()">
         <span class="nav-icon">
@@ -37,7 +58,7 @@
         <div class="dropdown-inner">
           <ng-container *ngIf="playlists.length > 0; else noPlaylists">
             <button
-              *ngFor="let p of playlists | slice:0:5; let i = index"
+              *ngFor="let p of playlists | slice:0:6; let i = index"
               class="dp-item"
               [style.--i]="i"
               (click)="goToPlaylist(p._id)">
@@ -49,7 +70,7 @@
           <ng-template #noPlaylists>
             <span class="dp-empty">Sin playlists aún</span>
           </ng-template>
-          <a routerLink="/playlist" class="dp-item dp-all" [style.--i]="playlists.length" (click)="isPlaylistsOpen=false">
+          <a routerLink="/playlist" class="dp-item dp-all" [style.--i]="playlists.length" (click)="isPlaylistsOpen=false; close()">
             <span class="dp-bullet all">+</span>
             <span class="dp-name">Ver todas</span>
           </a>
@@ -57,7 +78,7 @@
       </div>
     </div>
 
-    <!-- Mi Perfil — dropdown -->
+    <!-- Mi Perfil -->
     <div class="nav-group" [class.open]="isProfileOpen">
       <button class="nav-item nav-trigger" (click)="toggleProfile()">
         <span class="nav-icon">
@@ -74,7 +95,6 @@
 
       <div class="dropdown-panel">
         <div class="dropdown-inner">
-          <!-- Mini profile card -->
           <div class="profile-chip" *ngIf="user">
             <img [src]="user.avatar || defaultAvatar" class="chip-avatar" [alt]="user.nombre"/>
             <div class="chip-info">
@@ -82,12 +102,11 @@
               <span class="chip-role">{{ user.rol }}</span>
             </div>
           </div>
-
-          <a routerLink="/profile" class="dp-item" [style.--i]="0" (click)="isProfileOpen=false">
+          <a routerLink="/profile" class="dp-item" [style.--i]="0" (click)="isProfileOpen=false; close()">
             <span class="dp-bullet"></span>
             <span class="dp-name">Ver perfil</span>
           </a>
-          <a *ngIf="esCantante" routerLink="/subir" class="dp-item" [style.--i]="1" (click)="isProfileOpen=false">
+          <a *ngIf="esCantante" routerLink="/subir" class="dp-item" [style.--i]="1" (click)="isProfileOpen=false; close()">
             <span class="dp-bullet"></span>
             <span class="dp-name">Subir canción</span>
           </a>
@@ -96,57 +115,5 @@
     </div>
 
   </nav>
-
-  <!-- ── DIVIDER ── -->
-  <div class="sb-divider"><span>MÚSICA</span></div>
-
-  <!-- ── SEARCH ── -->
-  <div class="search-section">
-    <div class="search-bar" [class.focused]="isSearchOpen || searchQuery.length > 0">
-      <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
-      </svg>
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        placeholder="Buscar canción..."
-        (focus)="openSearch()"
-        (input)="filterSongs()"
-      />
-      <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Search results -->
-    <div class="search-results" *ngIf="isSearchOpen && filteredSongs.length > 0">
-      <div
-        *ngFor="let song of filteredSongs | slice:0:8; let i = index"
-        class="result-item"
-        [style.--i]="i">
-        <img
-          *ngIf="song.imagen"
-          [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen"
-          [alt]="song.titulo"
-          class="result-img"
-        />
-        <div class="result-body" (click)="playSong(song)">
-          <span class="result-title">{{ song.titulo || 'Sin título' }}</span>
-          <span class="result-artist">{{ song.cantante?.cantante || 'Artista' }}</span>
-        </div>
-        <button class="result-play" title="Reproducir" (click)="playSong(song)">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10">
-            <path d="M5 3l14 9-14 9V3z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <p class="no-results" *ngIf="isSearchOpen && searchQuery && filteredSongs.length === 0">
-      Sin resultados para "{{ searchQuery }}"
-    </p>
-  </div>
 
 </aside>

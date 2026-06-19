@@ -41,7 +41,10 @@ export const obtenerCantante = async (req, res) => {
       return res.status(400).json({ message: "ID no válido" });
     }
 
-    const cantante = await Cantante.findById(id);
+    const cantante = await Cantante.findById(id).populate({
+      path: 'canciones',
+      options: { sort: { plays: -1 } }
+    });
 
     if (!cantante) {
       return res.status(404).json({ message: "Cantante no encontrado" });

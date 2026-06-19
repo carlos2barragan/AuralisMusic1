@@ -7,12 +7,18 @@
     <div class="card-img-wrap">
       <img [src]="song.imagen || 'assets/default-cover.jpg'" [alt]="song.titulo" class="card-img" />
       <div class="play-overlay">
-        <span class="play-icon">▶</span>
+        <span class="play-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </span>
       </div>
     </div>
     <div class="card-info">
       <span class="card-title">{{ song.titulo }}</span>
-      <span class="card-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+      <span class="card-artist" (click)="goToArtist(song, $event)">
+        {{ song.cantante?.cantante || 'Artista desconocido' }}
+      </span>
     </div>
   </div>
 </div>

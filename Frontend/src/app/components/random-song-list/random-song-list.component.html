@@ -12,7 +12,12 @@
     class="table-row"
     (click)="selectSong(song)"
   >
-    <span class="col-num">{{ i + 1 }}</span>
+    <span class="col-num">
+      <span class="col-num-val">{{ i + 1 }}</span>
+      <span class="col-num-play">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 3l14 9-14 9V3z"/></svg>
+      </span>
+    </span>
 
     <div class="col-title">
       <img
@@ -23,7 +28,7 @@
       />
       <div class="song-meta">
         <span class="song-name">{{ song.titulo || 'Sin título' }}</span>
-        <span class="song-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+        <span class="song-artist" (click)="goToArtist(song, $event)">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
       </div>
     </div>
 

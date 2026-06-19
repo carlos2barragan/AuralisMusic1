@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { User, RegisterData, RegisterResponse } from '../models/user.model';
 import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -65,6 +65,36 @@ export class UserService {
   updateUserRole(userId: string, role: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/usuario/${userId}/rol`, { role }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError<any>('Error al actualizar el rol'))
+    );
+  }
+
+  updateProfile(userId: string, data: { nombre?: string; email?: string; avatar?: string }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/Usuario/${userId}`, data, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError<any>('Error al actualizar perfil'))
+    );
+  }
+
+  changePassword(userId: string, passwordActual: string, passwordNueva: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/Usuario/${userId}/password`, { passwordActual, passwordNueva }, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError<any>('Error al cambiar contraseña'))
+    );
+  }
+
+  getStats(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/Usuario/${userId}/stats`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError<any>('Error al obtener estadísticas'))
+    );
+  }
+
+  registerPlay(userId: string, song: { cancionId: string; titulo: string; cantante: string; genero: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/Usuario/${userId}/play`, song, { headers: this.getHeaders() }).pipe(
+      catchError(() => of(null))
+    );
+  }
+
+  updateConfig(userId: string, config: { perfilPublico?: boolean; mostrarHistorial?: boolean; notificaciones?: boolean }): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/Usuario/${userId}/config`, { config }, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError<any>('Error al actualizar configuración'))
     );
   }
 

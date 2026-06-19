@@ -30,7 +30,7 @@ import Cantante from "../Modelos/cantanteModelos.js";
 
  const login = async (req, res) => {
   try {
-   
+
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "Email y contraseña son requeridos." });
 
@@ -41,15 +41,15 @@ import Cantante from "../Modelos/cantanteModelos.js";
     if (!isMatch) return res.status(401).json({ message: "Credenciales incorrectas." });
 
     const token = jwt.sign({ id: usuario._id, rol: usuario.rol }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.status(200).json({ 
-      message: "Inicio de sesión exitoso.", 
-      token, 
-      user: { 
-        _id: usuario._id, 
-        nombre: usuario.nombre, 
-        email: usuario.email, 
-        rol: usuario.rol 
-      } 
+    res.status(200).json({
+      message: "Inicio de sesión exitoso.",
+      token,
+      user: {
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        rol: usuario.rol
+      }
     });
       } catch (error) {
     console.error("❌ Error en login:", error);
@@ -128,10 +128,99 @@ const actualizarUsuario = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar el rol" });
   }
 };
-export default { Registro,
-   login, 
-   obtenerUsuarios,
-    obtenerUsuario,
-     actualizarUsuario,
-      eliminarUsuario, 
-      updateUserRole };
+
+const obtenerStats = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "ID no válido" });
+
+    const usuario = await Usuario.findById(id);
+    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    const historial = usuario.historial || [];
+    const total = historial.length;
+
+    const genreCount = {};
+    historial.forEach(h => { if (h.genero) genreCount[h.genero] = (genreCount[h.genero] || 0) + 1; });
+    const favGenero = Object.entries(genreCount).sort(([,a],[,b]) => b-a)[0]?.[0] || null;
+
+    const artistCount = {};
+    historial.forEach(h => { if (h.cantante) artistCount[h.cantante] = (artistCount[h.cantante] || 0) + 1; });
+    const favArtista = Object.entries(artistCount).sort(([,a],[,b]) => b-a)[0]?.[0] || null;
+    const artTopCount = Object.values(artistCount).sort((a,b) => b-a)[0] || 0;
+
+    const tiempoMinutos = Math.round(total * 3.5);
+    const artistasUnicos = new Set(historial.map(h => h.cantante).filter(Boolean)).size;
+    const numPlaylists = (usuario.playlists || []).length;
+
+    const recientes = [...historial].reverse().slice(0, 10).map(h => ({
+      titulo: h.titulo, cantante: h.cantante, fecha: h.fecha
+    }));
+
+    const genreChart = Object.entries(genreCount)
+      .sort(([,a],[,b]) => b-a)
+      .slice(0, 5)
+      .map(([nombre, count]) => ({ nombre, count }));
+
+    res.status(200).json({
+      total, favGenero, favArtista, artTopCount,
+      tiempoMinutos, artistasUnicos, numPlaylists,
+      recientes, genreChart
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener estadísticas" });
+  }
+};
+
+const registrarPlay = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { cancionId, titulo, cantante, genero } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "ID no válido" });
+
+    await Usuario.findByIdAndUpdate(id, {
+      $push: { historial: { $each: [{ cancion: cancionId, titulo, cantante, genero, fecha: new Date() }], $slice: -500 } }
+    });
+
+    res.status(200).json({ message: "Reproducción registrada" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al registrar reproducción" });
+  }
+};
+
+const actualizarConfig = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { config } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "ID no válido" });
+
+    const usuario = await Usuario.findByIdAndUpdate(id, { $set: { config } }, { new: true });
+    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+    res.status(200).json(usuario);
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar configuración" });
+  }
+};
+
+const cambiarPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { passwordActual, passwordNueva } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "ID no válido" });
+
+    const usuario = await Usuario.findById(id);
+    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    const match = await bcrypt.compare(passwordActual, usuario.password);
+    if (!match) return res.status(401).json({ message: "La contraseña actual es incorrecta" });
+
+    usuario.password = await bcrypt.hash(passwordNueva, 10);
+    await usuario.save();
+    res.status(200).json({ message: "Contraseña actualizada con éxito" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al cambiar la contraseña" });
+  }
+};
+
+export default { Registro, login, obtenerUsuarios, obtenerUsuario, actualizarUsuario, eliminarUsuario, updateUserRole, obtenerStats, registrarPlay, actualizarConfig, cambiarPassword };

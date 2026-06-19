@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlaylistComponent } from '../../components/playlist/playlist.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 import { SongService } from '../../services/song.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { SongService } from '../../services/song.service';
   standalone: true,
   templateUrl: './playlst.component.html',
   styleUrls: ['./playlst.component.css'],
-  imports: [CommonModule, HeaderComponent, PlaylistComponent, SidebarComponent, MusicPlayerComponent]
+  imports: [CommonModule, HeaderComponent, PlaylistComponent, SidebarComponent]
 })
 export class Playlst {
   constructor(private songService: SongService) {}

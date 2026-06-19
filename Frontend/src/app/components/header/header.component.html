@@ -1,15 +1,74 @@
 <header class="header">
-  <a routerLink="/home" class="logo-link">
-    <img
-      src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
-      alt="Auralis"
-      class="logo"
-    />
-  </a>
+  <!-- Left: hamburger + logo -->
+  <div class="header-left">
+    <button class="hamburger" [class.is-open]="sidebarOpen" (click)="toggleSidebar()" aria-label="Menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a routerLink="/home" class="logo-link">
+      <img
+        src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
+        alt="Auralis"
+        class="logo"
+      />
+    </a>
+  </div>
 
+  <!-- Center: search -->
+  <div class="header-search" [class.expanded]="isSearchOpen || searchQuery.length > 0">
+    <svg class="hs-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+      <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+    </svg>
+    <input
+      class="hs-input"
+      type="text"
+      [(ngModel)]="searchQuery"
+      (focus)="openSearch()"
+      (input)="filterSongs()"
+      placeholder="Buscar canciones, artistas..."
+    />
+    <button class="hs-clear" *ngIf="searchQuery" (click)="clearSearch()" aria-label="Limpiar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- Results dropdown -->
+    <div class="hs-dropdown" *ngIf="isSearchOpen && searchQuery">
+      <div
+        *ngFor="let song of filteredSongs | slice:0:7; let i = index"
+        class="hs-item"
+        [style.--i]="i"
+        (click)="playSong(song)">
+        <img
+          *ngIf="song.imagen"
+          [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen"
+          [alt]="song.titulo"
+          class="hs-img"
+        />
+        <div class="hs-fallback-img" *ngIf="!song.imagen">♪</div>
+        <div class="hs-body">
+          <span class="hs-title">{{ song.titulo || 'Sin título' }}</span>
+          <span class="hs-artist">{{ song.cantante?.cantante || 'Artista' }}</span>
+        </div>
+        <button class="hs-play" title="Reproducir">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10">
+            <path d="M5 3l14 9-14 9V3z"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="hs-empty" *ngIf="filteredSongs.length === 0">
+        Sin resultados para "{{ searchQuery }}"
+      </p>
+    </div>
+  </div>
+
+  <!-- Right: account -->
   <div class="header-right">
     <div class="dropdown">
-      <button class="account-btn" (click)="toggleMenu()">
+      <button class="account-btn" (click)="toggleMenu(); $event.stopPropagation()">
         <span class="avatar-icon">♪</span>
         <span class="account-label">Mi cuenta</span>
         <span class="chevron" [class.open]="menuOpen">▾</span>

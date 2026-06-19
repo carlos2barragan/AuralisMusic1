@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
   }
-  
+
   body {
     font-family: Arial, sans-serif;
     background-color: #000000;
@@ -11,3 +11,50 @@
     margin: 0;
     padding: 0
   }
+
+/* ── SweetAlert2 — Auralis theme ── */
+.aur-popup {
+  border: 1px solid rgba(178,161,121,0.2) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(178,161,121,0.08) !important;
+}
+.aur-title {
+  color: #ffffff !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+.aur-text {
+  color: rgba(200,200,220,0.85) !important;
+}
+.aur-btn-confirm {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  box-shadow: 0 4px 16px rgba(178,161,121,0.3) !important;
+}
+.aur-btn-confirm:hover {
+  box-shadow: 0 6px 24px rgba(178,161,121,0.5) !important;
+}
+.aur-btn-cancel {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #aaaacc !important;
+}
+.aur-toast {
+  border: 1px solid rgba(178,161,121,0.18) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+}
+.swal2-timer-progress-bar {
+  background: #B2A179 !important;
+}
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: rgba(178,161,121,0.3) !important;
+}
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #B2A179 !important;
+}
+.swal2-loader {
+  border-color: #B2A179 transparent #B2A179 transparent !important;
+}

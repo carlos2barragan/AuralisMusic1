@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -40,7 +40,8 @@ export class RegisterComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alert: AlertService
   ) {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -51,47 +52,33 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.invalid) {
-      Swal.fire({
-        icon: 'warning',
-        title: '⚠️ Campos incompletos',
-        text: 'Por favor, completa todos los campos correctamente.',
-      });
+      this.alert.warning('Campos incompletos', 'Por favor, completa todos los campos correctamente.');
       return;
     }
-  
+
     this.loading = true;
-  
+
     const usuario = {
       nombre: this.registerForm.value.nombre,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password
     };
-  
+
     this.userService.register(usuario).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: '✅ ¡Registro exitoso!',
-          text: 'Hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.',
-          confirmButtonText: 'Aceptar'
-        }).then(() => {
-          this.registerForm.reset(); 
-          this.router.navigate(['/verificar-email']); 
-        });
+        this.alert.success('¡Registro exitoso!', 'Hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.')
+          .then(() => {
+            this.registerForm.reset();
+            this.router.navigate(['/verificar-email']);
+          });
         this.loading = false;
       },
       error: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: '❌ Error al registrarse',
-          text: error.error?.message || 'Hubo un problema, intenta nuevamente.',
-        });
+        this.alert.error('Error al registrarse', error.error?.message || 'Hubo un problema, intenta nuevamente.');
         this.loading = false;
       },
     });
   }
-  
-  
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
