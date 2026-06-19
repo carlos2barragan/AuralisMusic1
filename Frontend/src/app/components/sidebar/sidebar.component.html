@@ -1,49 +1,152 @@
 <aside class="sidebar">
 
-  <nav class="nav-links">
-    <a routerLink="/home" class="nav-item active">
-      <span class="nav-icon">🏠</span>
+  <!-- Background glow -->
+  <div class="sb-orb"></div>
+
+  <!-- ── NAVIGATION ── -->
+  <nav class="nav-section">
+    <span class="nav-section-label">NAVEGACIÓN</span>
+
+    <!-- Inicio -->
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-item">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+        </svg>
+      </span>
       <span class="nav-label">Inicio</span>
+      <span class="nav-glow"></span>
     </a>
-    <a routerLink="/playlist" class="nav-item">
-      <span class="nav-icon">📋</span>
-      <span class="nav-label">Mis Playlists</span>
-    </a>
-    <a routerLink="/profile" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span class="nav-label">Perfil</span>
-    </a>
+
+    <!-- Mis Playlists — dropdown -->
+    <div class="nav-group" [class.open]="isPlaylistsOpen">
+      <button class="nav-item nav-trigger" (click)="togglePlaylists()">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
+        </span>
+        <span class="nav-label">Mis Playlists</span>
+        <svg class="chevron" [class.rotated]="isPlaylistsOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+        <span class="nav-glow"></span>
+      </button>
+
+      <div class="dropdown-panel">
+        <div class="dropdown-inner">
+          <ng-container *ngIf="playlists.length > 0; else noPlaylists">
+            <button
+              *ngFor="let p of playlists | slice:0:5; let i = index"
+              class="dp-item"
+              [style.--i]="i"
+              (click)="goToPlaylist(p._id)">
+              <span class="dp-bullet"></span>
+              <span class="dp-name">{{ p.nombre }}</span>
+              <span class="dp-badge">{{ p.canciones?.length || 0 }}</span>
+            </button>
+          </ng-container>
+          <ng-template #noPlaylists>
+            <span class="dp-empty">Sin playlists aún</span>
+          </ng-template>
+          <a routerLink="/playlist" class="dp-item dp-all" [style.--i]="playlists.length" (click)="isPlaylistsOpen=false">
+            <span class="dp-bullet all">+</span>
+            <span class="dp-name">Ver todas</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mi Perfil — dropdown -->
+    <div class="nav-group" [class.open]="isProfileOpen">
+      <button class="nav-item nav-trigger" (click)="toggleProfile()">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </span>
+        <span class="nav-label">Mi Perfil</span>
+        <svg class="chevron" [class.rotated]="isProfileOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+        <span class="nav-glow"></span>
+      </button>
+
+      <div class="dropdown-panel">
+        <div class="dropdown-inner">
+          <!-- Mini profile card -->
+          <div class="profile-chip" *ngIf="user">
+            <img [src]="user.avatar || defaultAvatar" class="chip-avatar" [alt]="user.nombre"/>
+            <div class="chip-info">
+              <span class="chip-name">{{ user.nombre }}</span>
+              <span class="chip-role">{{ user.rol }}</span>
+            </div>
+          </div>
+
+          <a routerLink="/profile" class="dp-item" [style.--i]="0" (click)="isProfileOpen=false">
+            <span class="dp-bullet"></span>
+            <span class="dp-name">Ver perfil</span>
+          </a>
+          <a *ngIf="esCantante" routerLink="/subir" class="dp-item" [style.--i]="1" (click)="isProfileOpen=false">
+            <span class="dp-bullet"></span>
+            <span class="dp-name">Subir canción</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
   </nav>
 
-  <div class="sidebar-divider"></div>
+  <!-- ── DIVIDER ── -->
+  <div class="sb-divider"><span>MÚSICA</span></div>
 
+  <!-- ── SEARCH ── -->
   <div class="search-section">
-    <div class="search-bar">
-      <span class="search-icon">🔍</span>
+    <div class="search-bar" [class.focused]="isSearchOpen || searchQuery.length > 0">
+      <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+      </svg>
       <input
         type="text"
         [(ngModel)]="searchQuery"
         placeholder="Buscar canción..."
-        (click)="toggleSearch()"
+        (focus)="openSearch()"
         (input)="filterSongs()"
       />
+      <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    <ul class="search-results" *ngIf="isSearchVisible && filteredSongs.length > 0">
-      <li *ngFor="let song of filteredSongs | slice:0:8" class="result-item">
+    <!-- Search results -->
+    <div class="search-results" *ngIf="isSearchOpen && filteredSongs.length > 0">
+      <div
+        *ngFor="let song of filteredSongs | slice:0:8; let i = index"
+        class="result-item"
+        [style.--i]="i">
         <img
           *ngIf="song.imagen"
           [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen"
           [alt]="song.titulo"
           class="result-img"
         />
-        <div class="result-info">
+        <div class="result-body" (click)="playSong(song)">
           <span class="result-title">{{ song.titulo || 'Sin título' }}</span>
-          <span class="result-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+          <span class="result-artist">{{ song.cantante?.cantante || 'Artista' }}</span>
         </div>
-        <button class="play-btn" title="Reproducir" (click)="playSong(song)">▶</button>
-      </li>
-    </ul>
+        <button class="result-play" title="Reproducir" (click)="playSong(song)">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10">
+            <path d="M5 3l14 9-14 9V3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <p class="no-results" *ngIf="isSearchOpen && searchQuery && filteredSongs.length === 0">
+      Sin resultados para "{{ searchQuery }}"
+    </p>
   </div>
 
 </aside>

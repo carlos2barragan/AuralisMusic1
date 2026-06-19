@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Output, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { SongService } from '../../services/song.service';
+import { PlaylistService } from '../../services/playlist.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,78 +16,103 @@ import { SongService } from '../../services/song.service';
 export class SidebarComponent implements OnInit {
   @Output() songSelected = new EventEmitter<any>();
 
-  isExpanded = false;
-  isSearchVisible = true; // Inicia visible
-  isScrolled = false; // 🔥 Nuevo estado para saber si hizo scroll
   searchQuery = '';
-  playlist: any[] = [];
   songs: any[] = [];
   filteredSongs: any[] = [];
-  currentSong: any = null;
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event): void {
-    const searchBar = document.querySelector('.search-bar');
-    const songList = document.querySelector('.song-list');
-  
-    if (searchBar && songList && !searchBar.contains(event.target as Node) && !songList.contains(event.target as Node)) {
-      this.isSearchVisible = false;
-      this.searchQuery = '';
-      this.filteredSongs = [...this.songs];
-    }
-  }
-  
-  constructor(private songService: SongService) {}
+  playlists: any[] = [];
+  user: any = null;
+
+  isSearchOpen = false;
+  isPlaylistsOpen = false;
+  isProfileOpen = false;
+
+  readonly defaultAvatar = 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
+
+  constructor(
+    private songService: SongService,
+    private playlistService: PlaylistService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.getSongs();
+    this.loadUser();
+    this.loadPlaylists();
+  }
+
+  loadUser(): void {
+    const stored = localStorage.getItem('user');
+    this.user = stored ? JSON.parse(stored) : null;
+  }
+
+  get esCantante(): boolean {
+    return this.user?.rol === 'cantante' || this.user?.rol === 'administrador';
+  }
+
+  loadPlaylists(): void {
+    this.playlistService.getPlaylists().pipe(
+      catchError(() => of([]))
+    ).subscribe(data => {
+      this.playlists = Array.isArray(data) ? data : [];
+    });
   }
 
   getSongs(): void {
-    this.songService.getCanciones().subscribe(
-      data => {
+    this.songService.getCanciones().subscribe({
+      next: data => {
         this.songs = data;
         this.filteredSongs = [...this.songs];
       },
-      () => {}
-    );
+      error: () => {}
+    });
   }
 
   filterSongs(): void {
-    const searchTermLower = this.searchQuery.toLowerCase().trim();
-    
-    if (!searchTermLower) {
-      this.filteredSongs = [...this.songs];
-    } else {
-      this.filteredSongs = this.songs.filter(song =>
-        song.titulo?.toLowerCase().includes(searchTermLower) ||
-        song.album?.toLowerCase().includes(searchTermLower)
-      );
-    }
+    const q = this.searchQuery.toLowerCase().trim();
+    this.filteredSongs = q
+      ? this.songs.filter(s =>
+          s.titulo?.toLowerCase().includes(q) ||
+          s.cantante?.cantante?.toLowerCase().includes(q) ||
+          s.album?.toLowerCase().includes(q)
+        )
+      : [...this.songs];
   }
 
-  playSong(song: any) {
-    this.currentSong = song;
+  playSong(song: any): void {
     this.songSelected.emit(song);
   }
 
-  addToPlaylist(song: any) {
-    if (!this.playlist.includes(song)) {
-      this.playlist.push(song);
-    }
+  goToPlaylist(id: string): void {
+    this.router.navigate(['/playlist', id]);
+    this.isPlaylistsOpen = false;
   }
 
-  // 🔥 Detectar scroll en la página
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    this.isScrolled = window.scrollY > 50; // Si baja más de 50px, cambia el estado
+  togglePlaylists(): void {
+    this.isPlaylistsOpen = !this.isPlaylistsOpen;
+    if (this.isPlaylistsOpen) this.isProfileOpen = false;
   }
 
-  toggleSearch() {
-    this.isSearchVisible = !this.isSearchVisible;
-    if (!this.isSearchVisible) {
+  toggleProfile(): void {
+    this.isProfileOpen = !this.isProfileOpen;
+    if (this.isProfileOpen) this.isPlaylistsOpen = false;
+  }
+
+  openSearch(): void {
+    this.isSearchOpen = true;
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredSongs = [...this.songs];
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(e: Event): void {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && !sidebar.contains(e.target as Node)) {
+      this.isSearchOpen = false;
       this.searchQuery = '';
       this.filteredSongs = [...this.songs];
     }
   }
 }
-
