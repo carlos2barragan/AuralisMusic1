@@ -1,24 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
-import { tap, catchError, map } from 'rxjs/operators';
+import { User, RegisterData, RegisterResponse } from '../models/user.model';
+import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   public apiUrl = `${environment.apiUrl}/Api`;
+
   constructor(
-   
-    private http: HttpClient, 
-    private authService: AuthService, 
+    private http: HttpClient,
+    private authService: AuthService,
     private router: Router
   ) {}
-  
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('user_token') || '';
+    return new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' });
+  }
 
   register(registerData: RegisterData): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/Registro`, registerData).pipe(
@@ -31,61 +35,35 @@ export class UserService {
       catchError(this.handleError<RegisterResponse>('Error al registrar el usuario'))
     );
   }
+
   verifyEmail(token: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/verificar/${token}`, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
-    }).pipe(
+    return this.http.get<any>(`${this.apiUrl}/verificar/${token}`).pipe(
       tap(response => {
-        console.log('📥 Respuesta del backend (verificación de email):', response);
-  
         if (response?.success && response?.token && response?.user) {
-  
           localStorage.setItem('authToken', response.token);
           localStorage.setItem('user', JSON.stringify({
             _id: response.user._id,
             nombre: response.user.nombre,
             email: response.user.email,
-            rol: response.user.rol || 'usuario', 
+            rol: response.user.rol || 'usuario',
           }));
-  
-       
-  
-          // Redirige según el entorno
-          const redirectUrl = environment.production
-            ? `${environment.frontendUrl}/login`
-            : '/login'; 
-          console.log(environment.frontendUrl)
-          console.log("Redirigiendo a:", redirectUrl); 
-          setTimeout(() => {  
-            this.router.navigate([redirectUrl]);
-          }, 500);
-  
+          this.router.navigate(['/login']);
         } else {
           this.router.navigate(['/register']);
         }
       }),
-      catchError(error => {
-        console.error('❌ Error en la verificación del email:', error);
-        return throwError(() => new Error('Error al verificar el email.'));
-      })
+      catchError(() => throwError(() => new Error('Error al verificar el email.')))
     );
   }
-  
 
   fetchUserProfile(userId: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/usuario/${userId}`).pipe(
-      map(response => {
-        return response;
-      }),
+    return this.http.get<any>(`${this.apiUrl}/Usuario/${userId}`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError<any>('Error al obtener el perfil'))
     );
   }
 
-  
-
   updateUserRole(userId: string, role: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/usuario/${userId}/rol`, { role }).pipe(
-      tap(response => console.log('Rol actualizado:', response)),
+    return this.http.patch(`${this.apiUrl}/usuario/${userId}/rol`, { role }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError<any>('Error al actualizar el rol'))
     );
   }
@@ -96,5 +74,4 @@ export class UserService {
       return throwError(() => new Error(errorMessage));
     };
   }
- 
 }
