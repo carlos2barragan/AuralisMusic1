@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
 @Component({
+  standalone: true,
   selector: 'app-verificar',
   templateUrl: './verificar.component.html',
   styleUrls: ['./verificar.component.css']
