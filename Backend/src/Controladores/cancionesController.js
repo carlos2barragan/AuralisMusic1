@@ -102,11 +102,11 @@ export const ObtenerPorId = async (req, res) => {
 export const Actualizar = async (req, res) => {
   try {
     const { id } = req.params;
-    const { cancion, album, genero } = req.body;
+    const { titulo, album, genero } = req.body;
 
     const cancionActualizada = await Canciones.findByIdAndUpdate(
       id,
-      { cancion, album, genero },
+      { titulo, album, genero },
       { new: true }
     );
 
