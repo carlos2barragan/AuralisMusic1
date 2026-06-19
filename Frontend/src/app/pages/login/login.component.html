@@ -1,47 +1,90 @@
-<main>
-  <section id="login">
-    <div class="image-section"></div>
-    <div class="form-section">
-      <div class="logo-section"></div>
-      <h2>Iniciar sesión</h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <label for="email" class="form-label">Email</label>
-        <div class="input-container">
-          <input type="email" id="email" formControlName="email" placeholder="" />
+<div class="auth-scene" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
+
+  <!-- Background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+
+  <!-- Floating music notes -->
+  <span class="note n1">♪</span>
+  <span class="note n2">♫</span>
+  <span class="note n3">♩</span>
+  <span class="note n4">♬</span>
+  <span class="note n5">♪</span>
+
+  <!-- Grid lines -->
+  <div class="grid"></div>
+
+  <!-- 3D Card -->
+  <div class="card-perspective">
+    <div class="auth-card" [style.transform]="cardTransform">
+
+      <!-- Spinning decorative rings -->
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+
+      <!-- Glass card content -->
+      <div class="card-inner">
+        <div class="logo-wrap">
+          <img
+            src="https://res.cloudinary.com/dbt58u6ag/image/upload/v1740601259/uploads/zwutfwchdyr0qxo0b9vv.png"
+            alt="Auralis"
+            class="logo"
+          />
+          <div class="logo-glow"></div>
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Contraseña</label>
-          <div class="input-container">
-            <input 
-              type="password" 
-              id="password"
-              class="form-control" 
-              formControlName="password" 
-              [type]="passwordVisible ? 'text' : 'password'" 
-              placeholder=""
+
+        <h1 class="card-title">Bienvenido</h1>
+        <p class="card-subtitle">Inicia sesión para escuchar música</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+          <div class="field">
+            <input
+              type="email"
+              id="login-email"
+              formControlName="email"
+              placeholder=" "
+              autocomplete="email"
             />
-            <span 
-              (click)="togglePasswordVisibility()" 
-              class="password-toggle"
-            >
-              {{ passwordVisible ? '🔓' : '🔒 ' }}
-            </span>
+            <label for="login-email">Email</label>
+            <div class="field-line"></div>
           </div>
-        </div>
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
-        </div>
-        <button type="submit" class="btn">Iniciar sesión</button>
-      </form>
-      <div class="register-link">
-        <p *ngIf="failedAttempts <= 2">
-          ¿No tienes una cuenta? <a [routerLink]="['/register']">Regístrate aquí</a>
-        </p>
-        <p *ngIf="failedAttempts > 2">
-          ¿Olvidaste tu contraseña? <a [routerLink]="['/forgot-password']">Restablecer contraseña</a>
+
+          <div class="field">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              id="login-password"
+              formControlName="password"
+              placeholder=" "
+              autocomplete="current-password"
+            />
+            <label for="login-password">Contraseña</label>
+            <div class="field-line"></div>
+            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+              {{ passwordVisible ? '👁' : '👁‍🗨' }}
+            </button>
+          </div>
+
+          <div class="error-msg" *ngIf="errorMessage">
+            <span>⚠ {{ errorMessage }}</span>
+          </div>
+
+          <button type="submit" class="submit-btn" [class.loading]="false">
+            <span class="btn-text">Iniciar sesión</span>
+            <span class="btn-shine"></span>
+          </button>
+
+        </form>
+
+        <p class="switch-link">
+          ¿No tienes cuenta?
+          <a routerLink="/register">Regístrate gratis</a>
         </p>
       </div>
-    </div>      
-  </section>
-</main>
+    </div>
+  </div>
 
+</div>
