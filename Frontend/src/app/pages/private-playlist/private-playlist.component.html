@@ -1,3 +1,8 @@
 <app-header></app-header>
+<app-sidebar (songSelected)="playSidebarSong($event)"></app-sidebar>
 
-<app-playlist-user></app-playlist-user>
+<main class="main-content">
+  <app-playlist-user></app-playlist-user>
+</main>
+
+<app-music-player></app-music-player>

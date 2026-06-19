@@ -1,23 +1,34 @@
-<ul *ngIf="canciones?.length" class="song-list">
-  <li 
-    *ngFor="let song of canciones" 
-    class="song-item"
-    (click)="seleccionarCancion(song)" 
-  >
-    <!-- ✅ Verifica si la imagen es válida antes de mostrarla -->
-    <img 
-      *ngIf="song.imagen && typeof song.imagen === 'string'" 
-      [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen" 
-      [alt]="(song.album || 'Sin título') + ' Cover'" 
-      class="song-image" 
-    />
-
-    <div class="song-info">
-      <h4>{{ song.album || 'Álbum desconocido' }}</h4>
-      <p>{{ song.cantante?.cantante || 'Artista desconocido' }}</p>
+<div class="playlist-songs-wrapper">
+  <div class="song-list" *ngIf="canciones?.length; else emptyState">
+    <div
+      *ngFor="let song of canciones; let i = index"
+      class="song-row"
+      [style.--i]="i"
+      (click)="seleccionarCancion(song)">
+      <span class="song-num">{{ i + 1 }}</span>
+      <img
+        *ngIf="song.imagen"
+        [src]="song.imagen.startsWith('http') ? song.imagen : 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/' + song.imagen"
+        [alt]="song.titulo"
+        class="song-img"
+      />
+      <div class="song-info">
+        <span class="song-title">{{ song.titulo || song.album || 'Sin título' }}</span>
+        <span class="song-artist">{{ song.cantante?.cantante || 'Artista desconocido' }}</span>
+      </div>
+      <span class="song-album">{{ song.album || '—' }}</span>
+      <button class="song-play-btn" title="Reproducir">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12">
+          <path d="M5 3l14 9-14 9V3z"/>
+        </svg>
+      </button>
     </div>
-  </li>
-</ul>
+  </div>
 
-<!-- 🚨 Mensaje cuando la playlist no tiene canciones -->
-<p *ngIf="!canciones || canciones.length === 0">🚫 No hay canciones en esta playlist.</p>
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <span class="empty-icon">🎵</span>
+      <p>No hay canciones en esta playlist</p>
+    </div>
+  </ng-template>
+</div>

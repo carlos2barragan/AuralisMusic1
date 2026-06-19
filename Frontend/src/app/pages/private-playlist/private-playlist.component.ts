@@ -5,14 +5,15 @@ import { SongService } from '../../services/song.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlaylistUserComponent } from '../../components/playlist-user/playlist-user.component';
-
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
 @Component({
   standalone: true,
   selector: 'app-private-playlist',
   templateUrl: './private-playlist.component.html',
   styleUrls: ['./private-playlist.component.css'],
-  imports: [CommonModule, HeaderComponent, PlaylistUserComponent]
+  imports: [CommonModule, HeaderComponent, PlaylistUserComponent, SidebarComponent, MusicPlayerComponent]
 })
 export class PrivatePlaylistComponent implements OnInit {
   playlist: any = null;
@@ -86,6 +87,11 @@ export class PrivatePlaylistComponent implements OnInit {
     this.audioPlayer.currentTime = 0;
     this.isPlaying = false;
     this.currentSong = null;
-    this.showMusicPlayer = false; 
+    this.showMusicPlayer = false;
+  }
+
+  playSidebarSong(song: any): void {
+    this.songService.setCurrentSong(song);
+    this.songService.setIsPlaying(true);
   }
 }

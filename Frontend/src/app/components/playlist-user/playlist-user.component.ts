@@ -4,14 +4,13 @@ import { PlaylistService } from '../../services/playlist.service';
 import { SongService } from '../../services/song.service';
 import { CommonModule } from '@angular/common';
 import { PlaylistSongsComponent } from '../../components/playlist-songs/playlist-songs.component';
-import { MusicPlayerComponent } from '../../components/music-player/music-player.component';
 
 @Component({
   selector: 'app-playlist-user',
   templateUrl: './playlist-user.component.html',
   styleUrls: ['./playlist-user.component.css'],
   standalone: true,
-  imports: [CommonModule, PlaylistSongsComponent, MusicPlayerComponent]
+  imports: [CommonModule, PlaylistSongsComponent]
 })
 export class PlaylistUserComponent implements OnInit {
   @Input() playlist: any = null;

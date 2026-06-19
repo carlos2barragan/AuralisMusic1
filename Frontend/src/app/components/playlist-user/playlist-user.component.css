@@ -1,0 +1,78 @@
+.pu-wrapper { display: block; }
+
+/* ── Hero ── */
+.pu-hero {
+  position: relative;
+  padding: 48px 40px 36px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1a0830 0%, #0d0d14 100%);
+  border-bottom: 1px solid rgba(178,161,121,0.08);
+}
+.pu-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.pu-orb-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(178,161,121,0.1) 0%, transparent 65%);
+  top: -150px; right: 0;
+}
+.pu-orb-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(120,80,200,0.1) 0%, transparent 65%);
+  bottom: -100px; left: 100px;
+}
+.pu-hero-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+}
+
+.pu-cover {
+  width: 130px; height: 130px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2a1845, #1a1030);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(178,161,121,0.1);
+  flex-shrink: 0;
+}
+.pu-cover-icon { font-size: 52px; opacity: 0.4; }
+
+.pu-hero-info { min-width: 0; }
+.pu-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #B2A179;
+  margin-bottom: 8px;
+}
+.pu-title {
+  font-size: 36px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pu-count {
+  font-size: 14px;
+  color: #8888a0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .pu-hero { padding: 28px 20px; }
+  .pu-hero-body { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .pu-cover { width: 90px; height: 90px; }
+  .pu-title { font-size: 24px; }
+}

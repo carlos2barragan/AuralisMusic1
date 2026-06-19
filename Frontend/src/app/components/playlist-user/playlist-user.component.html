@@ -1,5 +1,20 @@
-<app-playlist-songs (songSelected)="playSong($event)"></app-playlist-songs>
+<div class="pu-wrapper">
+  <!-- Hero -->
+  <div class="pu-hero" *ngIf="playlist">
+    <div class="pu-hero-orb pu-orb-1"></div>
+    <div class="pu-hero-orb pu-orb-2"></div>
+    <div class="pu-hero-body">
+      <div class="pu-cover">
+        <span class="pu-cover-icon">♫</span>
+      </div>
+      <div class="pu-hero-info">
+        <span class="pu-eyebrow">Playlist</span>
+        <h1 class="pu-title">{{ playlist.nombre }}</h1>
+        <p class="pu-count">{{ canciones.length }} cancion{{ canciones.length !== 1 ? 'es' : '' }}</p>
+      </div>
+    </div>
+  </div>
 
-<app-music-player 
-  *ngIf="showMusicPlayer">
-</app-music-player>
+  <!-- Songs -->
+  <app-playlist-songs (songSelected)="playSong($event)"></app-playlist-songs>
+</div>

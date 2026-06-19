@@ -1,5 +1,11 @@
+.main-content {
+  margin-left: 240px;
+  margin-top: 64px;
+  padding-bottom: 110px;
+  min-height: calc(100vh - 64px);
+  background: #0d0d14;
+}
 
-app-playlist-songs {
-    display: block;  /* Asegurar que respeta los márgenes */
-    margin-top: 50px; /* Ajusta este valor según lo necesites */
+@media (max-width: 768px) {
+  .main-content { margin-left: 60px; }
 }
