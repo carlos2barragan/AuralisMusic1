@@ -77,7 +77,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          console.error("❌ Error en login:", err);
           this.errorMessage = err.error?.message || 'Ocurrió un error, intenta más tarde.';
           this.failedAttempts++;
   

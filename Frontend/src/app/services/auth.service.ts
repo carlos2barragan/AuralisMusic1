@@ -62,8 +62,6 @@ export class AuthService {
         this.router.navigate(['/home']);
       }),
       catchError(error => {
-        console.error('❌ Error en login:', error);
-  
         let errorMessage = 'Error al iniciar sesión.';
         if (error?.error?.message) {
           errorMessage = error.error.message;

@@ -38,7 +38,7 @@ export class RandomSongListComponent implements OnInit {
       next: (data) => {
         this.songs = data.filter(song => song.fileUrl);
       },
-      error: (err) => console.error('❌ Error al obtener canciones:', err)
+      error: () => {}
     });
   }
   
@@ -47,7 +47,7 @@ export class RandomSongListComponent implements OnInit {
       next: (data) => {
         this.playlists = data || [];
       },
-      error: (err) => console.error('❌ Error al obtener playlists:', err)
+      error: () => {}
     });
   }
 
@@ -71,7 +71,7 @@ export class RandomSongListComponent implements OnInit {
         this.showAlert('success', '✅ Canción agregada', 'La canción se añadió a la playlist.');
         this.closeModal();
       },
-      error: (err) => console.error('❌ Error al agregar canción:', err)
+      error: () => {}
     });
   }
 
@@ -95,7 +95,7 @@ export class RandomSongListComponent implements OnInit {
         this.fetchPlaylists();
         this.closeModal();
       },
-      error: (err) => console.error('❌ Error al crear la playlist:', err)
+      error: () => {}
     });
   }
 

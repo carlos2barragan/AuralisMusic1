@@ -63,7 +63,6 @@ export class HomeComponent {
   playRandomSong() {
     const allSongs = [...this.mostPlayedSongs, ...this.recentSongs];
     if (allSongs.length === 0) {
-      console.error('No hay canciones disponibles para reproducción aleatoria.');
       return;
     }
   

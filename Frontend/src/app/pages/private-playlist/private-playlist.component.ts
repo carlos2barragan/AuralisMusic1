@@ -42,24 +42,18 @@ export class PrivatePlaylistComponent implements OnInit {
       next: (data) => {
     
   
-        if (!data || typeof data !== 'object') {
-          console.error('❌ Error: Datos de playlist inválidos');
-          return;
-        }
+        if (!data || typeof data !== 'object') return;
   
         this.playlist = data;
         this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
   
       },
-      error: (err) => console.error('❌ Error al cargar la playlist:', err)
+      error: () => {}
     });
   }
 
   playSong(song: any) {
-    if (!song || !song.fileUrl) {
-      console.error('❌ La canción no tiene URL de audio');
-      return;
-    }
+    if (!song?.fileUrl) return;
 
     if (this.currentSong && this.isPlaying) {
       this.audioPlayer.pause();

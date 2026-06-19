@@ -45,9 +45,7 @@ export class SidebarComponent implements OnInit {
         this.songs = data;
         this.filteredSongs = [...this.songs];
       },
-      error => {
-        console.error('Error al obtener canciones:', error);
-      }
+      () => {}
     );
   }
 

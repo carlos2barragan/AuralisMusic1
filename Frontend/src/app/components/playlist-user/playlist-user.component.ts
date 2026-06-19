@@ -35,30 +35,18 @@ export class PlaylistUserComponent implements OnInit {
   cargarPlaylist(id: string) {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
-        console.log('📥 Respuesta de la API:', data);
-
-        if (!data || typeof data !== 'object') {
-          console.error('❌ Error: Datos de playlist inválidos');
-          return;
-        }
-
+        if (!data || typeof data !== 'object') return;
         this.playlist = data;
         this.canciones = Array.isArray(data.canciones) ? data.canciones : [];
       },
-      error: (err) => console.error('❌ Error al cargar la playlist:', err)
+      error: () => {}
     });
   }
 
   playSong(song: any) {
-    if (!song || !song.fileUrl) {
-      console.error('❌ La canción no tiene URL de audio');
-      return;
-    }
-
+    if (!song?.fileUrl) return;
     this.currentSong = song;
     this.showMusicPlayer = true;
-
-    // ✅ Enviar la canción al servicio para que `MusicPlayerComponent` la reciba
     this.songService.setCurrentSong(song);
   }
 }

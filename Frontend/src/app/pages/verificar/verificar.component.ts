@@ -35,11 +35,9 @@ export class VerificarComponent implements OnInit {
         this.loading = false;
         this.router.navigate(['/login'], { queryParams: { verified: true } });
       },
-      (error) => {
-       
+      () => {
         this.loading = false;
         this.error = 'Hubo un error al verificar tu correo. Por favor, inténtalo de nuevo.';
-        console.error('Error al verificar el correo', error);
       }
     );
   }

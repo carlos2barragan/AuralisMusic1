@@ -34,10 +34,7 @@ export class PlaylistSongsComponent implements OnInit {
   cargarPlaylist(id: string): void {
     this.playlistService.getPlaylist(id).subscribe({
       next: (data) => {
-        if (!data || typeof data !== 'object') {
-          console.error('❌ Error: Datos de playlist inválidos');
-          return;
-        }
+        if (!data || typeof data !== 'object') return;
 
         this.playlist = data;
 
@@ -48,37 +45,26 @@ export class PlaylistSongsComponent implements OnInit {
             this.canciones = [...data.canciones];
           }
         } else {
-          console.warn('⚠️ La playlist no tiene canciones.');
           this.canciones = [];
         }
       },
-      error: (err) => console.error('❌ Error al cargar la playlist:', err)
+      error: () => {}
     });
   }
 
   obtenerDetallesCanciones(cancionIds: string[]): void {
-    if (!cancionIds.length) {
-      console.warn('⚠️ No hay canciones para cargar.');
-      return;
-    }
+    if (!cancionIds.length) return;
 
     const requests = cancionIds.map(id => this.songService.getCancionById(id));
 
     forkJoin(requests).subscribe({
-      next: (songsData) => {
-        this.canciones = songsData;
-      },
-      error: (err) => console.error('❌ Error al obtener detalles de canciones:', err)
+      next: (songsData) => { this.canciones = songsData; },
+      error: () => {}
     });
   }
 
   seleccionarCancion(song: any): void {
-    if (!song?.fileUrl) {
-      console.error('❌ La canción no tiene URL de audio');
-      return;
-    }
-
-    // ✅ Emitimos la canción sin reproducirla
+    if (!song?.fileUrl) return;
     this.songSelected.emit(song);
   }
 }

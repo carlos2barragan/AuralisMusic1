@@ -31,10 +31,7 @@ export class PlaylistComponent implements OnInit {
  
   loadPlaylists() {
     this.playlistService.getPlaylists().pipe(
-      catchError(error => {
-        console.error('Error al cargar playlists:', error);
-        return of([]);
-      })
+      catchError(() => of([]))
     ).subscribe((data) => {
       this.playlists = data || [];
     });
@@ -57,10 +54,7 @@ export class PlaylistComponent implements OnInit {
   addSong() {
     if (this.selectedPlaylist && this.newSong.title && this.newSong.artist && this.newSong.url) {
       this.playlistService.addSongToPlaylist(this.selectedPlaylist._id, this.newSong).pipe(
-        catchError(error => {
-          console.error('Error al agregar canción:', error);
-          return of(null);
-        })
+        catchError(() => of(null))
       ).subscribe(() => {
         this.loadPlaylists();
         this.newSong = { title: '', artist: '', url: '', _id: '' };
