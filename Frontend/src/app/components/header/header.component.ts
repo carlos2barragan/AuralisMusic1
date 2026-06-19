@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,15 +10,14 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   menuOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
   logout() {
-    localStorage.removeItem('token'); 
-    this.menuOpen = false; 
-    this.router.navigate(['/login']); 
+    this.menuOpen = false;
+    this.authService.logout();
   }
 }
