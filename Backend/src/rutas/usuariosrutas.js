@@ -1,18 +1,17 @@
-// routes/usuarioRoutes.js
 import express from "express";
 import usuariosController from "../Controladores/usuariosController.js";
-
 import sendVerificationEmailMiddleware from "../middlewares/enviarEmail.js";
-
+import tokenValido from "../middlewares/autenticacion.js";
+import verificarRoles from "../middlewares/verificarRole.js";
 
 const router = express.Router();
+
 router.post("/Registro", sendVerificationEmailMiddleware, usuariosController.Registro);
 router.post("/Login", usuariosController.login);
-router.get("/Usuario/:id", usuariosController.obtenerUsuario);
-router.get("/Usuario", usuariosController.obtenerUsuarios);
-router.put("/Usuario/:id", usuariosController.actualizarUsuario);
-router.patch("/usuario/:id/rol", usuariosController.updateUserRole);
-router.delete("/Usuario/:id", usuariosController.eliminarUsuario);
-
+router.get("/Usuario/:id", tokenValido, usuariosController.obtenerUsuario);
+router.get("/Usuario", tokenValido, verificarRoles(["administrador"]), usuariosController.obtenerUsuarios);
+router.put("/Usuario/:id", tokenValido, usuariosController.actualizarUsuario);
+router.patch("/usuario/:id/rol", tokenValido, verificarRoles(["administrador"]), usuariosController.updateUserRole);
+router.delete("/Usuario/:id", tokenValido, verificarRoles(["administrador"]), usuariosController.eliminarUsuario);
 
 export default router;
