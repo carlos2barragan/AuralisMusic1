@@ -1,4 +1,24 @@
-<main class="main-container">
-<div>  <app-header></app-header></div>
- <div class="separacion"> <app-playlist></app-playlist> </div>
+<app-header></app-header>
+<app-sidebar (songSelected)="playSong($event)"></app-sidebar>
+
+<main class="main-content">
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-body">
+      <span class="hero-eyebrow">Tu música</span>
+      <h1 class="hero-title">Mis Playlists</h1>
+      <p class="hero-sub">Toda tu colección, organizada</p>
+    </div>
+  </section>
+
+  <!-- Playlists grid -->
+  <section class="playlists-section">
+    <app-playlist></app-playlist>
+  </section>
+
 </main>
+
+<app-music-player></app-music-player>
