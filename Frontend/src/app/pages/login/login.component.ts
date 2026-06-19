@@ -57,10 +57,6 @@ export class LoginComponent implements OnInit, OnDestroy {
          
   
           if (res.token && res.user) {
-            localStorage.setItem('token', res.token);
-            localStorage.setItem('user', JSON.stringify(res.user));
-            localStorage.setItem('userRol', res.user.rol); 
-
             Swal.fire({
               title: 'Inicio de sesión exitoso',
               text: '✅ Redirigiendo a la página principal...',

@@ -8,33 +8,25 @@ export class CantanteGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('user_token');
     const user = localStorage.getItem('user');
 
     if (!token || !user) {
-      console.warn('🚫 No hay sesión. Redirigiendo a /register');
-      this.router.navigate(['/register']);
+      this.router.navigate(['/login']);
       return false;
     }
 
     try {
       const parsedUser = JSON.parse(user);
+      const rol = parsedUser.rol?.trim().toLowerCase();
 
-      if (!parsedUser.rol) {
-        console.error('⚠️ Error: El usuario no tiene rol definido.');
-        this.router.navigate(['/']);
-        return false;
-      }
-
-      if (parsedUser.rol.trim().toLowerCase() !== 'cantante') {
-        console.warn('🚫 Acceso denegado. El usuario no es cantante.');
-        this.router.navigate(['/']);
+      if (rol !== 'cantante' && rol !== 'administrador') {
+        this.router.navigate(['/home']);
         return false;
       }
       return true;
-    } catch (error) {
-      console.error('❌ Error al procesar el usuario desde localStorage:', error);
-      this.router.navigate(['/']);
+    } catch {
+      this.router.navigate(['/login']);
       return false;
     }
   }
