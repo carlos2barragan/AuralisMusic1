@@ -17,7 +17,7 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent },
-  { path: 'playlist/:id', component: PrivatePlaylistComponent }, 
+  { path: 'playlist/:id', component: PrivatePlaylistComponent, canActivate: [AuthGuard] },
   { path: 'subir', component: SubirCancionComponent, canActivate: [CantanteGuard] },           
   { path: 'verificar-email', component: VerificarEmailComponent }, // Ruta para la página de verificación
   { path: 'verificar/:token', component: VerificarComponent }, // Ruta para el proceso de verificación con token
