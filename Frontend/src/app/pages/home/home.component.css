@@ -1,3 +1,9 @@
+/* ── Page entry animation ── */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .main-content {
   position: relative;
   margin-left: 240px;
@@ -7,12 +13,12 @@
   background: #0d0d14;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  animation: pageIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 /* ── Ambient background ── */
 .ambient-layer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
@@ -49,12 +55,6 @@
   66%      { transform: translate(-20px,20px) scale(0.95); }
 }
 
-/* All sections sit above ambient layer */
-.main-content > *:not(.ambient-layer) {
-  position: relative;
-  z-index: 1;
-}
-
 /* ── Greeting ── */
 .greeting-section {
   display: flex;
@@ -62,6 +62,8 @@
   justify-content: space-between;
   padding: 40px 40px 24px;
   background: linear-gradient(180deg, rgba(26,22,32,0.9) 0%, transparent 100%);
+  position: relative;
+  z-index: 1;
 }
 .greeting-time {
   font-size: 13px;
@@ -111,7 +113,8 @@
   background: linear-gradient(135deg, rgba(26,20,40,0.85) 0%, rgba(13,13,20,0.6) 100%);
   border-top: 1px solid rgba(178,161,121,0.1);
   border-bottom: 1px solid rgba(178,161,121,0.1);
-  backdrop-filter: blur(6px);
+  position: relative;
+  z-index: 1;
   animation: fadeSlideIn 0.4s ease;
 }
 @keyframes fadeSlideIn {
@@ -119,10 +122,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.artist-avatar-wrap {
-  position: relative;
-  flex-shrink: 0;
-}
+.artist-avatar-wrap { position: relative; flex-shrink: 0; }
 .artist-avatar {
   width: 68px; height: 68px;
   border-radius: 50%;
@@ -135,14 +135,11 @@
   inset: -3px;
   border-radius: 50%;
   border: 2px solid transparent;
-  background: linear-gradient(135deg, #B2A179, transparent, #B2A179) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-  animation: spinRing 4s linear infinite;
+  border-top-color: #B2A179;
+  animation: ringRotate 4s linear infinite;
   z-index: 1;
 }
-@keyframes spinRing { to { transform: rotate(360deg); } }
+@keyframes ringRotate { to { transform: rotate(360deg); } }
 .artist-glow {
   position: absolute;
   inset: -6px;
@@ -218,6 +215,8 @@
 /* ── Sections ── */
 .songs-section {
   padding: 32px 40px 0;
+  position: relative;
+  z-index: 1;
 }
 .section-header {
   display: flex;
