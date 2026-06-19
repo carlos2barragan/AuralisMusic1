@@ -23,11 +23,8 @@ export const crear = async (req, res) => {
 
 
     const cancionesEncontradas = await Canciones.find({
-      $or: [{ _id: { $in: objectIds } }, { nombre: { $in: nombresCanciones } }],
+      $or: [{ _id: { $in: objectIds } }, { titulo: { $in: nombresCanciones } }],
     });
-
-    console.log("Canciones encontradas:", cancionesEncontradas);
-
 
     const usuarioEncontrado = await Usuario.findById(creadoPor);
 
@@ -36,16 +33,11 @@ export const crear = async (req, res) => {
     }
 
     if (cancionesEncontradas.length === 0) {
-      const nuevasCanciones = await Canciones.insertMany(
-        cancionesArray.map(cancion => ({ nombre: cancion })) 
-      );
-
-     
-      cancionesEncontradas.push(...nuevasCanciones); 
+      return res.status(400).json({ message: "No se encontraron canciones válidas para agregar a la playlist." });
     }
 
     const nuevaPlaylist = new PlayList({
-      canciones: cancionesEncontradas.map((c) => c._id), 
+      canciones: cancionesEncontradas.map((c) => c._id),
       creadoPor: usuarioEncontrado._id,
       nombre,
     });
