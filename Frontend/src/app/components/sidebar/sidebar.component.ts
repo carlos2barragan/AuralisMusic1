@@ -59,7 +59,7 @@ export class SidebarComponent implements OnInit {
       this.filteredSongs = [...this.songs];
     } else {
       this.filteredSongs = this.songs.filter(song =>
-        song.cancion?.toLowerCase().includes(searchTermLower) || 
+        song.titulo?.toLowerCase().includes(searchTermLower) ||
         song.album?.toLowerCase().includes(searchTermLower)
       );
     }
