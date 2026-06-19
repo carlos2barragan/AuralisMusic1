@@ -29,9 +29,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    const token = localStorage.getItem('user_token');
-    console.log('🔑 Token desde localStorage:', token); 
-    return token;
+    return localStorage.getItem('user_token');
   }
   
 
@@ -51,21 +49,16 @@ export class AuthService {
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
-        console.log('📥 Respuesta del servidor:', response);   
         this.setToken(response.token);
-  
+
         const userData = {
-          _id: response.user._id || 'SIN_ID',
-          nombre: response.user.nombre || 'Desconocido',
-          email: response.user.email || 'Sin correo',
-          rol: response.user.rol?.trim().toLowerCase() || 'usuario' 
+          _id: response.user._id,
+          nombre: response.user.nombre,
+          email: response.user.email,
+          rol: response.user.rol?.trim().toLowerCase() || 'usuario',
         };
-  
+
         localStorage.setItem('user', JSON.stringify(userData));
-  
-        console.log('✅ Usuario guardado en localStorage:', userData);
-  
-     
         this.router.navigate(['/home']);
       }),
       catchError(error => {
