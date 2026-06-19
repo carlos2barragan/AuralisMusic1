@@ -4,7 +4,7 @@
     <img class="song-image" [src]="currentSong?.imagen || 'assets/default-image.jpg'" alt="Portada" />
     <div class="song-info">
       <h4 *ngIf="currentSong?.album">{{ currentSong.album }}</h4>
-      <p *ngIf="currentSong?.cantante?.nombre">{{ currentSong.cantante.nombre }}</p>
+      <p *ngIf="currentSong?.cantante?.cantante">{{ currentSong.cantante.cantante }}</p>
     </div>
   </div>
 

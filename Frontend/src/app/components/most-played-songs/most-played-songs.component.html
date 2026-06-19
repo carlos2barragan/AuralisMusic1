@@ -2,9 +2,9 @@
   <h2>Canciones Más Escuchadas</h2>
   <ul>
     <li *ngFor="let song of songs.slice(0, 4)">
-      <img [src]="song.imagen" [alt]="song.cantante.nombre" class="song-img">
+      <img [src]="song.imagen" [alt]="song.cantante.cantante" class="song-img">
       <div>
-        <strong>{{ song.cantante.nombre }}</strong> - {{ song.album }}
+        <strong>{{ song.cantante.cantante }}</strong> - {{ song.album }}
       </div>
     </li>
   </ul>

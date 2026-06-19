@@ -94,8 +94,8 @@ export class HomeComponent {
 
     this.selectedArtist = song.cantante
       ? {
-          nombre: song.cantante.nombre,
-          avatar: (song.cantante as any).imagen || 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp'
+          nombre: song.cantante.cantante,
+          avatar: song.cantante.avatar || 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp'
         }
       : { 
           nombre: 'Artista Desconocido', 
