@@ -7,6 +7,7 @@ import { RandomSongListComponent } from '../../components/random-song-list/rando
 import { MostPlayedSongsComponent } from '../../components/most-played-songs/most-played-songs.component';
 import { RecentSongsComponent } from '../../components/recent-songs/recent-songs.component';
 import { SongService } from '../../services/song.service';
+import { SpotifyService } from '../../services/spotify.service';
 import { Cancion } from '../../models/cancion.model';
 
 @Component({
@@ -35,18 +36,29 @@ export class HomeComponent implements OnInit {
   listenedArtists: any[] = [];
   quickItems: Cancion[] = [];
 
+  spotifyImages   = new Map<string, string>();
+  spotifyLinks    = new Map<string, string>();
+  spotifyPreviews = new Map<string, string>();
+  artistImages    = new Map<string, string>();
+  artistLinks     = new Map<string, string>();
+
   readonly defaultAvatar = 'https://res.cloudinary.com/dbt58u6ag/image/upload/v1740604204/uploads/afo3nyrvyhmn330lq0np.webp';
   heroTransform = '';
 
-  constructor(private songService: SongService) {}
+  constructor(private songService: SongService, private spotifyService: SpotifyService) {}
 
   ngOnInit() {
     this.songService.getMostPlayedSongs().subscribe(songs => {
       this.mostPlayedSongs = songs;
       this.buildQuickItems();
       this.deriveArtists();
+      this.enrichSongs(songs);
+      this.enrichArtists(songs.map((s: any) => s.cantante).filter(Boolean));
     });
-    this.songService.getRecentSongs().subscribe(songs => this.recentSongs = songs);
+    this.songService.getRecentSongs().subscribe(songs => {
+      this.recentSongs = songs;
+      this.enrichSongs(songs);
+    });
     this.loadRecentlyPlayed();
   }
 
@@ -56,6 +68,36 @@ export class HomeComponent implements OnInit {
       this.buildQuickItems();
       this.deriveArtists();
     } catch { this.recentlyPlayed = []; }
+  }
+
+  private enrichSongs(songs: any[]): void {
+    const payload = songs.slice(0, 10).map((s: any) => ({
+      id: s._id,
+      titulo: s.titulo,
+      artista: s.cantante?.cantante || ''
+    }));
+    if (!payload.length) return;
+    this.spotifyService.enrichSongs(payload).subscribe({
+      next: results => results.forEach((r: any) => {
+        if (r.imagen) this.spotifyImages.set(r.id, r.imagen);
+        if (r.externalUrl) this.spotifyLinks.set(r.id, r.externalUrl);
+        if (r.preview) this.spotifyPreviews.set(r.id, r.preview);
+      }),
+      error: () => {}
+    });
+  }
+
+  private enrichArtists(artists: any[]): void {
+    const unique = [...new Map(artists.map((a: any) => [a._id, a])).values()].slice(0, 8);
+    if (!unique.length) return;
+    const payload = unique.map((a: any) => ({ id: a._id, nombre: a.cantante || a.nombre }));
+    this.spotifyService.enrichArtists(payload).subscribe({
+      next: results => results.forEach((r: any) => {
+        if (r.imagen) this.artistImages.set(r.id, r.imagen);
+        if (r.externalUrl) this.artistLinks.set(r.id, r.externalUrl);
+      }),
+      error: () => {}
+    });
   }
 
   private buildQuickItems(): void {
@@ -94,10 +136,12 @@ export class HomeComponent implements OnInit {
 
   playSong(song: Cancion) {
     if (!song) return;
-    this.currentSong = song;
+    const preview = this.spotifyPreviews.get((song as any)._id);
+    const enriched = preview ? { ...song, fileUrl: preview } : song;
+    this.currentSong = enriched as Cancion;
     this.isPlaying = true;
     this.showMusicPlayer = true;
-    this.songService.setCurrentSong(song);
+    this.songService.setCurrentSong(enriched as Cancion);
     this.songService.setIsPlaying(true);
     this.selectedArtist = {
       nombre: song.cantante?.cantante || 'Artista desconocido',
@@ -132,9 +176,19 @@ export class HomeComponent implements OnInit {
   get avatarUrl(): string { return this.selectedArtist?.avatar || this.defaultAvatar; }
 
   getImageUrl(song: any): string {
+    const spotify = this.spotifyImages.get(song?._id);
+    if (spotify) return spotify;
     if (!song?.imagen) return '';
     return song.imagen.startsWith('http')
       ? song.imagen
       : `https://res.cloudinary.com/dbt58u6ag/image/upload/v1740519430/${song.imagen}`;
+  }
+
+  getArtistImage(artist: any): string {
+    return this.artistImages.get(artist?._id) || artist?.avatar || this.defaultAvatar;
+  }
+
+  getSpotifyLink(id: string): string | null {
+    return this.spotifyLinks.get(id) || null;
   }
 }

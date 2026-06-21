@@ -365,6 +365,108 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Spotify action button ── */
+.spotify-artist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(29,185,84,0.1);
+  border: 1px solid rgba(29,185,84,0.3);
+  color: #1DB954;
+  padding: 12px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.spotify-artist-link:hover { background: rgba(29,185,84,0.2); border-color: rgba(29,185,84,0.5); }
+
+/* ── Spotify followers chip ── */
+.spotify-followers-chip { color: #1DB954 !important; }
+.spotify-followers-chip svg { color: #1DB954; }
+
+/* ── Spotify section divider ── */
+.spotify-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 0 8px;
+}
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(29,185,84,0.2);
+}
+.divider-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1DB954;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+/* ── Spotify song rows ── */
+.spotify-song-row { border-left: 2px solid rgba(29,185,84,0.3); padding-left: 8px; }
+.spotify-song-row:hover { background: rgba(29,185,84,0.05); }
+.spotify-song-row.no-preview { opacity: 0.75; }
+.spotify-song-row.no-preview:hover { opacity: 1; }
+
+.preview-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(29,185,84,0.15);
+  color: #1DB954;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-top: 2px;
+}
+.no-preview-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.06);
+  color: rgba(136,136,160,0.7);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-top: 2px;
+}
+.spotify-popularity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(29,185,84,0.8) !important;
+}
+
+/* ── Skeleton loader rows ── */
+.skeleton-row { pointer-events: none; }
+.skeleton-num {
+  width: 20px; height: 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+}
+.skeleton-cover {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+.skeleton-text {
+  width: 180px; height: 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  animation: skeletonPulse 1.4s ease-in-out infinite 0.2s;
+}
+@keyframes skeletonPulse {
+  0%,100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
 /* ── Empty state ── */
 .empty-state {
   text-align: center;

@@ -647,3 +647,85 @@
   .page-section { padding: 24px 20px 0; }
   .quick-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 }
+
+/* ── Spotify featured section ── */
+.spotify-icon-title { color: #1DB954; flex-shrink: 0; }
+
+.section-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1DB954;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.section-link:hover { opacity: 1; }
+
+.spotify-skeleton-row {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+.spotify-skeleton {
+  width: 140px;
+  height: 160px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+}
+@keyframes skeletonShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.spotify-card .sc-play-btn.spotify-open-btn {
+  background: #1DB954;
+  color: #000;
+}
+.spotify-card .sc-play-btn.spotify-open-btn:hover {
+  background: #1ed760;
+}
+
+/* ── Spotify enrichment badges ── */
+.sc-spotify-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: #1DB954;
+  color: #000;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 2;
+}
+
+.song-card:hover .sc-spotify-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arc-spotify-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(29,185,84,0.15);
+  color: #1DB954;
+  border: 1px solid rgba(29,185,84,0.3);
+  border-radius: 20px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-top: 2px;
+}
+
+.arc-spotify-badge:hover { background: rgba(29,185,84,0.28); }

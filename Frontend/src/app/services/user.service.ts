@@ -68,6 +68,12 @@ export class UserService {
     );
   }
 
+  solicitarArtista(userId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/Usuario/${userId}/solicitar-artista`, {}, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError<any>('Error al solicitar artista'))
+    );
+  }
+
   updateProfile(userId: string, data: { nombre?: string; email?: string; avatar?: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/Usuario/${userId}`, data, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError<any>('Error al actualizar perfil'))
