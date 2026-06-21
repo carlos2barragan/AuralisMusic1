@@ -1,0 +1,196 @@
+@keyframes pageIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spin    { to { transform:rotate(360deg); } }
+
+.main-content {
+  margin-top: 64px;
+  padding: 40px 48px 120px;
+  min-height: calc(100vh - 64px);
+  background: #080810;
+  animation: pageIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 6px;
+  background: linear-gradient(135deg, #fff 50%, #B2A179 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-subtitle { font-size: 14px; color: rgba(136,136,160,0.7); margin: 0; }
+
+/* Filter tabs */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 9px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 30px;
+  color: rgba(136,136,160,0.8);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover { background: rgba(255,255,255,0.08); color: #d4d4e8; }
+.filter-btn.active {
+  background: rgba(178,161,121,0.12);
+  border-color: rgba(178,161,121,0.35);
+  color: #B2A179;
+}
+
+/* Loading */
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(136,136,160,0.6);
+  padding: 40px 0;
+}
+.mini-spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(178,161,121,0.2);
+  border-top-color: #B2A179;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Empty */
+.empty-state {
+  text-align: center;
+  padding: 60px 0;
+  color: rgba(136,136,160,0.5);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; margin: 0; }
+
+/* Card list */
+.solicitudes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 800px;
+}
+.solicitud-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  background: linear-gradient(135deg, #141228, #0f0e1e);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 20px 22px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.solicitud-card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  border-color: rgba(178,161,121,0.12);
+}
+
+/* Avatar initial */
+.sc-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(178,161,121,0.2), rgba(100,60,220,0.15));
+  border: 1.5px solid rgba(178,161,121,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #B2A179;
+  flex-shrink: 0;
+}
+
+.sc-body { flex: 1; min-width: 0; }
+.sc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.sc-name { font-size: 15px; font-weight: 700; color: #fff; }
+.sc-estado {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.05em;
+  text-transform: capitalize;
+}
+.sc-estado-pendiente {
+  background: rgba(200,160,40,0.12);
+  border: 1px solid rgba(200,160,40,0.3);
+  color: #d4b050;
+}
+.sc-estado-aceptada {
+  background: rgba(80,200,100,0.1);
+  border: 1px solid rgba(80,200,100,0.3);
+  color: #78c878;
+}
+.sc-estado-rechazada {
+  background: rgba(220,60,60,0.1);
+  border: 1px solid rgba(220,60,60,0.3);
+  color: #e06060;
+}
+
+.sc-email { display: block; font-size: 12.5px; color: rgba(136,136,160,0.7); margin-bottom: 6px; }
+.sc-mensaje {
+  font-size: 13px;
+  color: rgba(200,200,220,0.75);
+  margin: 6px 0;
+  line-height: 1.5;
+  font-style: italic;
+}
+.sc-fecha { display: block; font-size: 12px; color: rgba(136,136,160,0.5); }
+
+/* Actions */
+.sc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.sc-btn {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+.sc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.sc-btn-accept {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(76,175,80,0.3);
+}
+.sc-btn-accept:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76,175,80,0.5); }
+.sc-btn-reject {
+  background: rgba(220,60,60,0.12);
+  border: 1px solid rgba(220,60,60,0.3);
+  color: #e06060;
+}
+.sc-btn-reject:hover:not(:disabled) {
+  background: rgba(220,60,60,0.2);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .main-content { padding: 24px 16px 100px; }
+  .solicitud-card { flex-direction: column; }
+  .sc-actions { flex-direction: row; width: 100%; }
+  .sc-btn { flex: 1; }
+}

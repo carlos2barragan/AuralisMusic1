@@ -214,3 +214,70 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* ── Spotify section ── */
+.sb-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 14px 0;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 16px;
+}
+
+.sb-admin-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: rgba(178,161,121,0.06);
+  border: 1px solid rgba(178,161,121,0.15);
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.sb-admin-btn svg { color: #B2A179; flex-shrink: 0; }
+.sb-admin-btn:hover { background: rgba(178,161,121,0.14); border-color: rgba(178,161,121,0.4); color: #fff; }
+
+.sb-spotify {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 14px 0;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 16px;
+}
+
+.sb-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(136,136,160,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 0 4px 6px;
+}
+
+.sb-spotify-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: rgba(29, 185, 84, 0.06);
+  border: 1px solid rgba(29, 185, 84, 0.15);
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.sb-spotify-btn svg { color: #1DB954; flex-shrink: 0; }
+.sb-spotify-btn:hover { background: rgba(29, 185, 84, 0.14); border-color: rgba(29, 185, 84, 0.4); color: #fff; }

@@ -1,0 +1,67 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<main class="main-content">
+  <div class="page-header">
+    <div class="page-title-row">
+      <h1 class="page-title">Solicitudes de artista</h1>
+      <p class="page-subtitle">Revisa y gestiona las solicitudes para convertirse en artista</p>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <button class="filter-btn" [class.active]="filtro==='pendiente'" (click)="setFiltro('pendiente')">
+      ⏳ Pendientes
+    </button>
+    <button class="filter-btn" [class.active]="filtro==='aceptada'" (click)="setFiltro('aceptada')">
+      ✅ Aceptadas
+    </button>
+    <button class="filter-btn" [class.active]="filtro==='rechazada'" (click)="setFiltro('rechazada')">
+      ❌ Rechazadas
+    </button>
+    <button class="filter-btn" [class.active]="filtro===''" (click)="setFiltro('')">
+      Todas
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-row" *ngIf="loading">
+    <div class="mini-spinner"></div>
+    <span>Cargando solicitudes...</span>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loading && solicitudes.length === 0">
+    <div class="empty-icon">📭</div>
+    <p>No hay solicitudes {{ filtro ? filtro + 's' : '' }} en este momento.</p>
+  </div>
+
+  <!-- List -->
+  <div class="solicitudes-list" *ngIf="!loading && solicitudes.length > 0">
+    <div class="solicitud-card" *ngFor="let s of solicitudes">
+      <div class="sc-avatar">
+        {{ s.nombre?.charAt(0)?.toUpperCase() || '?' }}
+      </div>
+      <div class="sc-body">
+        <div class="sc-header">
+          <span class="sc-name">{{ s.nombre }}</span>
+          <span class="sc-estado" [class]="'sc-estado sc-estado-' + s.estado">{{ s.estado }}</span>
+        </div>
+        <span class="sc-email">{{ s.email }}</span>
+        <p class="sc-mensaje" *ngIf="s.mensaje">{{ s.mensaje }}</p>
+        <span class="sc-fecha" *ngIf="s.createdAt">Enviada el {{ s.createdAt | date:'d MMM yyyy, HH:mm' }}</span>
+      </div>
+      <div class="sc-actions" *ngIf="s.estado === 'pendiente'">
+        <button class="sc-btn sc-btn-accept" (click)="aceptar(s)" [disabled]="procesando[s._id]">
+          <span *ngIf="!procesando[s._id]">✅ Aceptar</span>
+          <span *ngIf="procesando[s._id]">...</span>
+        </button>
+        <button class="sc-btn sc-btn-reject" (click)="rechazar(s)" [disabled]="procesando[s._id]">
+          <span *ngIf="!procesando[s._id]">❌ Rechazar</span>
+          <span *ngIf="procesando[s._id]">...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

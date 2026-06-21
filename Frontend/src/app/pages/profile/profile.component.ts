@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { SolicitudService } from '../../services/solicitud.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -24,6 +25,11 @@ export class ProfileComponent implements OnInit {
 
   activeSection: 'perfil' | 'stats' | 'plan' | 'config' | 'privacidad' = 'perfil';
 
+  solicitud: any = null;
+  solicitudLoading = false;
+  enviandoSolicitud = false;
+  mensajeSolicitud = '';
+
   stats: any = null;
   statsLoading = false;
 
@@ -38,6 +44,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     private playlistService: PlaylistService,
     private userService: UserService,
+    private solicitudService: SolicitudService,
     private songService: SongService,
     private alert: AlertService,
     private fb: FormBuilder
@@ -47,6 +54,7 @@ export class ProfileComponent implements OnInit {
     this.loadUserFromLocalStorage();
     this.fetchUserProfile();
     this.initForms();
+    this.cargarSolicitud();
   }
 
   private initForms(): void {
@@ -76,6 +84,7 @@ export class ProfileComponent implements OnInit {
 
   fetchUserProfile(): void {
     if (!this.user?._id) return;
+    const rolAnterior = this.user?.rol;
     this.userService.fetchUserProfile(this.user._id).subscribe({
       next: (response) => {
         if (!response) return;
@@ -84,6 +93,12 @@ export class ProfileComponent implements OnInit {
         this.profileForm?.patchValue({ nombre: this.user.nombre, email: this.user.email, avatar: this.user.avatar || '' });
         if (this.user.config) this.config = { ...this.config, ...this.user.config };
         if (Array.isArray(response.playlists)) this.cargarPlaylists(response.playlists);
+
+        const welcomeKey = `auralis_artist_welcome_${this.user._id}`;
+        if (this.user.rol === 'cantante' && rolAnterior !== 'cantante' && !localStorage.getItem(welcomeKey)) {
+          localStorage.setItem(welcomeKey, '1');
+          this.alert.artistWelcome(this.user.nombre || 'Artista');
+        }
       },
       error: () => {}
     });
@@ -171,16 +186,28 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  cargarSolicitud(): void {
+    if (!this.user?._id || this.esCantante()) return;
+    this.solicitudLoading = true;
+    this.solicitudService.miSolicitud(this.user._id).subscribe({
+      next: (s) => { this.solicitud = s; this.solicitudLoading = false; },
+      error: () => { this.solicitudLoading = false; }
+    });
+  }
+
   sendRequest(): void {
     if (!this.user?._id) { this.alert.error('Error', 'No se encontró el usuario.'); return; }
-    this.alert.loading('Procesando solicitud...');
-    this.userService.updateUserRole(this.user._id, 'cantante').subscribe({
-      next: () => {
-        this.user.rol = 'cantante';
-        localStorage.setItem('user', JSON.stringify(this.user));
-        this.alert.success('¡Felicidades!', 'Ahora eres artista en Auralis.');
+    this.enviandoSolicitud = true;
+    this.solicitudService.enviar(this.user._id, this.mensajeSolicitud).subscribe({
+      next: (res) => {
+        this.solicitud = res.solicitud;
+        this.enviandoSolicitud = false;
+        this.alert.success('Solicitud enviada', 'Un administrador revisará tu solicitud pronto.');
       },
-      error: () => { this.alert.error('Error', 'Hubo un problema al enviar la solicitud.'); }
+      error: (err) => {
+        this.enviandoSolicitud = false;
+        this.alert.error('Error', err?.error?.message || 'No se pudo enviar la solicitud.');
+      }
     });
   }
 

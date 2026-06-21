@@ -60,15 +60,7 @@
 
     <!-- ────── PERFIL ────── -->
     <section class="section-panel" *ngIf="activeSection==='perfil'">
-      <!-- Artist / listener action card -->
-      <div class="action-card" *ngIf="!esCantante()">
-        <div class="ac-icon">🎤</div>
-        <div class="ac-text">
-          <h3>¿Quieres compartir tu música?</h3>
-          <p>Conviértete en artista y sube tus canciones a Auralis</p>
-        </div>
-        <button (click)="sendRequest()" class="ac-btn">Ser artista</button>
-      </div>
+      <!-- Ya es artista -->
       <div class="action-card action-card-artist" *ngIf="esCantante()">
         <div class="ac-icon">🎵</div>
         <div class="ac-text">
@@ -76,6 +68,55 @@
           <p>Sube canciones y comparte tu música con el mundo</p>
         </div>
         <a routerLink="/subir" class="ac-btn">Subir canción</a>
+      </div>
+
+      <!-- Sin solicitud: formulario para enviar -->
+      <div class="action-card" *ngIf="!esCantante() && !solicitudLoading && !solicitud">
+        <div class="ac-icon">🎤</div>
+        <div class="ac-text">
+          <h3>¿Quieres compartir tu música?</h3>
+          <p>Envía una solicitud para convertirte en artista. Un administrador la revisará.</p>
+          <textarea
+            class="solicitud-textarea"
+            [(ngModel)]="mensajeSolicitud"
+            placeholder="Cuéntanos sobre ti y tu música (opcional)..."
+            rows="2">
+          </textarea>
+        </div>
+        <button (click)="sendRequest()" class="ac-btn" [disabled]="enviandoSolicitud">
+          {{ enviandoSolicitud ? 'Enviando...' : 'Enviar solicitud' }}
+        </button>
+      </div>
+
+      <!-- Solicitud pendiente -->
+      <div class="action-card action-card-pending" *ngIf="!esCantante() && solicitud?.estado === 'pendiente'">
+        <div class="ac-icon">⏳</div>
+        <div class="ac-text">
+          <h3>Solicitud enviada</h3>
+          <p>Tu solicitud está en revisión. Un administrador la aceptará o rechazará pronto.</p>
+          <span class="solicitud-fecha" *ngIf="solicitud?.createdAt">
+            Enviada el {{ solicitud.createdAt | date:'d MMM yyyy' }}
+          </span>
+        </div>
+        <span class="estado-badge estado-pendiente">Pendiente</span>
+      </div>
+
+      <!-- Solicitud rechazada -->
+      <div class="action-card action-card-rejected" *ngIf="!esCantante() && solicitud?.estado === 'rechazada'">
+        <div class="ac-icon">❌</div>
+        <div class="ac-text">
+          <h3>Solicitud rechazada</h3>
+          <p>Tu solicitud fue rechazada. Puedes volver a intentarlo con más información.</p>
+          <textarea
+            class="solicitud-textarea"
+            [(ngModel)]="mensajeSolicitud"
+            placeholder="Cuéntanos más sobre ti y tu música..."
+            rows="2">
+          </textarea>
+        </div>
+        <button (click)="sendRequest()" class="ac-btn" [disabled]="enviandoSolicitud">
+          {{ enviandoSolicitud ? 'Enviando...' : 'Reenviar solicitud' }}
+        </button>
       </div>
 
       <!-- Playlists -->

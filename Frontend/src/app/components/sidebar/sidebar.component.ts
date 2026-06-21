@@ -24,6 +24,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isOpen = false;
   genres: GenreCard[] = [];
 
+  get isAdmin(): boolean {
+    try {
+      const u = localStorage.getItem('user');
+      return u ? JSON.parse(u)?.rol === 'administrador' : false;
+    } catch { return false; }
+  }
+
   private subs = new Subscription();
 
   private readonly genreMeta: Record<string, { icon: string; gradient: string }> = {
