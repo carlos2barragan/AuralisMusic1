@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import session from "express-session";
 import { connectDB } from "./src/config/database.js";
 import cors from "cors";
 import path from "path";
@@ -11,6 +12,8 @@ import cancionesrutas from "./src/rutas/cancionesrutas.js";
 import cantantesrutas from "./src/rutas/cantantesrutas.js";
 import playlistrutas from "./src/rutas/playlistrutas.js";
 import uploadRoutes from "./src/rutas/uploads.js";
+import spotifyrutas from "./src/rutas/spotifyrutas.js";
+import solicitudesrutas from "./src/rutas/solicitudesrutas.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,6 +37,13 @@ app.use(cors({
   credentials: true,
 }));
 
+app.use(session({
+  secret: process.env.SESSION_SECRET || "auralis_session_secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === "production", httpOnly: true, maxAge: 3600000 },
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -44,6 +54,8 @@ app.use("/Api", cantantesrutas);
 app.use("/Api", cancionesrutas);
 app.use("/Api", playlistrutas);
 app.use("/Api", uploadRoutes);
+app.use("/Api", spotifyrutas);
+app.use("/Api", solicitudesrutas);
 
 app.use((req, res, next) => {
   res.status(404).json({ error: "Ruta no encontrada" });

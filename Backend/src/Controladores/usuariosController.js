@@ -223,4 +223,32 @@ const cambiarPassword = async (req, res) => {
   }
 };
 
-export default { Registro, login, obtenerUsuarios, obtenerUsuario, actualizarUsuario, eliminarUsuario, updateUserRole, obtenerStats, registrarPlay, actualizarConfig, cambiarPassword };
+const solicitarArtista = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "ID no válido" });
+
+    const usuario = await Usuario.findById(id);
+    if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    if (usuario.rol === "cantante" || usuario.rol === "administrador") {
+      return res.status(400).json({ message: "El usuario ya es artista" });
+    }
+
+    usuario.rol = "cantante";
+    await usuario.save();
+
+    let cantanteExistente = await Cantante.findOne({ cantante: usuario.nombre });
+    if (!cantanteExistente) {
+      const nuevoCantante = new Cantante({ cantante: usuario.nombre, canciones: [], avatar: usuario.avatar || null });
+      await nuevoCantante.save();
+    }
+
+    res.json({ message: "Ahora eres artista en Auralis", user: usuario });
+  } catch (error) {
+    console.error("Error al solicitar artista:", error);
+    res.status(500).json({ message: "Error al procesar la solicitud" });
+  }
+};
+
+export default { Registro, login, obtenerUsuarios, obtenerUsuario, actualizarUsuario, eliminarUsuario, updateUserRole, solicitarArtista, obtenerStats, registrarPlay, actualizarConfig, cambiarPassword };

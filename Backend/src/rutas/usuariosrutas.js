@@ -18,5 +18,6 @@ router.get("/Usuario/:id/stats", tokenValido, usuariosController.obtenerStats);
 router.post("/Usuario/:id/play", tokenValido, usuariosController.registrarPlay);
 router.patch("/Usuario/:id/config", tokenValido, usuariosController.actualizarConfig);
 router.patch("/Usuario/:id/password", tokenValido, usuariosController.cambiarPassword);
+router.patch("/Usuario/:id/solicitar-artista", tokenValido, usuariosController.solicitarArtista);
 
 export default router;
