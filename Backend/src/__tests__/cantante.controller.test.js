@@ -70,7 +70,7 @@ describe("OBTENER CANTANTE", () => {
     },
   ];
   it("Deberia de obtener un cantante", async () => {
-    Cantante.findById.mockResolvedValue(mockCantante);
+    Cantante.findById.mockReturnValue({ populate: jest.fn().mockResolvedValue(mockCantante) });
 
     const req = { params: { id: "65d9b1f2e4b0a3f4c5e6d7e8" } };
     const res = {
@@ -83,7 +83,7 @@ describe("OBTENER CANTANTE", () => {
     expect(res.json).toHaveBeenCalledWith(mockCantante);
   });
   it("Deberia de retornar ID no valido al intentar buscar un cantante", async () => {
-    Cantante.findById.mockResolvedValue(mockCantante);
+    Cantante.findById.mockReturnValue({ populate: jest.fn().mockResolvedValue(mockCantante) });
 
     const req = { params: { id: "" } };
     const res = {
@@ -98,7 +98,7 @@ describe("OBTENER CANTANTE", () => {
     });
   });
   it("Deberia de retornar Cantante no encontrado", async () => {
-    Cantante.findById.mockResolvedValue();
+    Cantante.findById.mockReturnValue({ populate: jest.fn().mockResolvedValue(null) });
 
     const req = { params: { id: "65d9b1f2e4b0a3f4c5e6d7e8" } };
     const res = {
@@ -113,7 +113,7 @@ describe("OBTENER CANTANTE", () => {
     });
   });
   it("Deberia de retornar Error interno del servidor", async () => {
-    Cantante.findById.mockRejectedValue(mockCantante);
+    Cantante.findById.mockReturnValue({ populate: jest.fn().mockRejectedValue(new Error("DB error")) });
 
     const req = { params: { id: "65d9b1f2e4b0a3f4c5e6d7e8" } };
     const res = {
