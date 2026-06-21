@@ -1,46 +1,110 @@
 <app-header></app-header>
+<app-sidebar></app-sidebar>
 
-<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-  <h2 class="text-xl font-semibold text-center">Subir Canción</h2>
+<main class="main-content">
 
-  <form [formGroup]="cancionForm" (ngSubmit)="subirCancion()" class="mt-4">
-    <div class="mb-4">
-      <label class="block text-gray-700">Cantante</label>
-      <input formControlName="cantante" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded"/>
+  <!-- Hero -->
+  <div class="upload-hero">
+    <div class="hero-bg"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-body">
+      <div class="hero-icon">🎵</div>
+      <div>
+        <h1 class="hero-title">Sube tu música</h1>
+        <p class="hero-sub">Comparte tu arte con todos los oyentes de Auralis</p>
+      </div>
     </div>
+  </div>
 
-    <div class="mb-4">
-      <label class="block text-gray-700">Nombre de la Canción</label>
-      <input formControlName="cancion" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded"/>
+  <!-- Form -->
+  <div class="upload-container">
+    <form [formGroup]="cancionForm" (ngSubmit)="subirCancion()" class="upload-form">
+
+      <!-- Left col: metadata -->
+      <div class="form-col">
+        <h2 class="col-title">Información de la canción</h2>
+
+        <div class="form-group">
+          <label class="form-label">Nombre de la canción <span class="required">*</span></label>
+          <input class="form-input" type="text" formControlName="cancion" placeholder="Ej: Callaíta"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Artista <span class="required">*</span></label>
+          <input class="form-input" type="text" formControlName="cantante" placeholder="Tu nombre artístico"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Álbum <span class="required">*</span></label>
+          <input class="form-input" type="text" formControlName="album" placeholder="Nombre del álbum o EP"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Género <span class="required">*</span></label>
+          <select class="form-input form-select" formControlName="genero">
+            <option value="" disabled selected>Selecciona un género</option>
+            <option *ngFor="let g of generos" [value]="g">{{ g }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Right col: files -->
+      <div class="form-col">
+        <h2 class="col-title">Archivos</h2>
+
+        <!-- Audio drop zone -->
+        <div class="form-group">
+          <label class="form-label">Archivo de audio <span class="required">*</span></label>
+          <label class="drop-zone" [class.has-file]="archivoCancion">
+            <input type="file" class="drop-input" (change)="seleccionarArchivo($event, 'song')" accept="audio/*"/>
+            <ng-container *ngIf="!archivoCancion">
+              <div class="dz-icon">🎧</div>
+              <p class="dz-text">Arrastra tu audio aquí o <span class="dz-link">selecciona un archivo</span></p>
+              <p class="dz-hint">MP3, WAV, FLAC · Máx. 20 MB</p>
+            </ng-container>
+            <ng-container *ngIf="archivoCancion">
+              <div class="dz-icon">✅</div>
+              <p class="dz-text file-name">{{ nombreArchivo }}</p>
+              <button type="button" class="dz-clear" (click)="$event.preventDefault(); limpiarAudio()">Cambiar archivo</button>
+            </ng-container>
+          </label>
+        </div>
+
+        <!-- Image drop zone -->
+        <div class="form-group">
+          <label class="form-label">Portada <span class="optional">(opcional)</span></label>
+          <label class="drop-zone drop-zone-img" [class.has-file]="archivoImagen">
+            <input type="file" class="drop-input" (change)="seleccionarArchivo($event, 'image')" accept="image/*"/>
+            <img *ngIf="previewImagen" [src]="previewImagen" class="img-preview" alt="portada"/>
+            <ng-container *ngIf="!archivoImagen">
+              <div class="dz-icon">🖼️</div>
+              <p class="dz-text">Sube una imagen de portada</p>
+              <p class="dz-hint">JPG, PNG, WEBP · Recomendado 800×800</p>
+            </ng-container>
+            <ng-container *ngIf="archivoImagen && !previewImagen">
+              <div class="dz-icon">✅</div>
+              <p class="dz-text file-name">{{ nombreImagen }}</p>
+            </ng-container>
+            <button *ngIf="archivoImagen" type="button" class="dz-clear img-clear" (click)="$event.preventDefault(); limpiarImagen()">Cambiar imagen</button>
+          </label>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Submit -->
+    <div class="submit-row">
+      <div class="submit-hint" *ngIf="!archivoCancion">Selecciona un archivo de audio para continuar</div>
+      <button
+        class="submit-btn"
+        [disabled]="cargando || cancionForm.invalid || !archivoCancion"
+        (click)="subirCancion()">
+        <span class="submit-spinner" *ngIf="cargando"></span>
+        <span *ngIf="!cargando">🚀 Publicar canción</span>
+        <span *ngIf="cargando">Subiendo...</span>
+      </button>
     </div>
+  </div>
 
-    <div class="mb-4">
-      <label class="block text-gray-700">Álbum</label>
-      <input formControlName="album" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded"/>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-gray-700">Género</label>
-      <input formControlName="genero" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded"/>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-gray-700">Seleccionar Canción (MP3, WAV)</label>
-      <input type="file" (change)="seleccionarArchivo($event, 'song')" accept="audio/*" required
-             class="w-full px-3 py-2 border border-gray-300 rounded"/>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-gray-700">Seleccionar Imagen (Opcional)</label>
-      <input type="file" (change)="seleccionarArchivo($event, 'image')" accept="image/*"
-             class="w-full px-3 py-2 border border-gray-300 rounded"/>
-    </div>
-
-    <button type="submit" [disabled]="cargando || cancionForm.invalid || !archivoCancion"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-      {{ cargando ? 'Subiendo...' : 'Subir Canción' }}
-    </button>
-
-    <p *ngIf="mensaje" class="mt-3 text-center text-sm text-red-600">{{ mensaje }}</p>
-  </form>
-</div>
+</main>

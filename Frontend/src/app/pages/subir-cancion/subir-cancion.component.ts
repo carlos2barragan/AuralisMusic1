@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SongService } from '../../services/song.service';
-import { HeaderComponent } from "../../components/header/header.component";
+import { HeaderComponent } from '../../components/header/header.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 
@@ -12,14 +13,22 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './subir-cancion.component.html',
   styleUrls: ['./subir-cancion.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HeaderComponent]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HeaderComponent, SidebarComponent]
 })
 export class SubirCancionComponent implements OnInit {
   cancionForm: FormGroup;
-  cargando: boolean = false;
-  mensaje: string = '';
+  cargando = false;
   archivoCancion: File | null = null;
   archivoImagen: File | null = null;
+  nombreArchivo = '';
+  nombreImagen = '';
+  previewImagen = '';
+
+  readonly generos = [
+    'Reggaeton', 'Pop', 'R&B', 'Hip-Hop', 'Rock', 'Electronic',
+    'Latin', 'Trap', 'Alternative', 'Indie', 'Soul', 'Jazz',
+    'Dance', 'Classical', 'Indie Pop', 'Latin Urban'
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -29,72 +38,89 @@ export class SubirCancionComponent implements OnInit {
   ) {
     this.cancionForm = this.fb.group({
       cantante: ['', Validators.required],
-      cancion: ['', Validators.required],
-      album: ['', Validators.required],
-      genero: ['', Validators.required]
+      cancion:  ['', Validators.required],
+      album:    ['', Validators.required],
+      genero:   ['', Validators.required],
     });
   }
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user?.nombre) this.cancionForm.patchValue({ cantante: user.nombre });
+    } catch {}
+  }
 
-  seleccionarArchivo(event: any, tipo: 'song' | 'image') {
-    const file = event.target.files[0];
+  seleccionarArchivo(event: Event, tipo: 'song' | 'image'): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
 
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      this.mensaje = `El archivo ${file.name} es demasiado grande.`;
-      return;
-    }
-
-    if (tipo === 'song' && !file.type.startsWith('audio/')) {
-      this.mensaje = 'El archivo seleccionado no es un audio válido.';
-      return;
-    }
-
-    if (tipo === 'image' && !file.type.startsWith('image/')) {
-      this.mensaje = 'El archivo seleccionado no es una imagen válida.';
-      return;
-    }
-
     if (tipo === 'song') {
+      if (!file.type.startsWith('audio/')) {
+        this.alert.warning('Archivo inválido', 'Selecciona un archivo de audio (MP3, WAV, etc.)');
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        this.alert.warning('Archivo muy grande', 'El audio no debe superar 20 MB.');
+        return;
+      }
       this.archivoCancion = file;
+      this.nombreArchivo = file.name;
     } else {
+      if (!file.type.startsWith('image/')) {
+        this.alert.warning('Archivo inválido', 'Selecciona una imagen (JPG, PNG, etc.)');
+        return;
+      }
       this.archivoImagen = file;
+      this.nombreImagen = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => { this.previewImagen = e.target?.result as string; };
+      reader.readAsDataURL(file);
     }
   }
 
-  subirCancion() {
+  limpiarAudio(): void {
+    this.archivoCancion = null;
+    this.nombreArchivo = '';
+  }
+
+  limpiarImagen(): void {
+    this.archivoImagen = null;
+    this.nombreImagen = '';
+    this.previewImagen = '';
+  }
+
+  subirCancion(): void {
     if (this.cancionForm.invalid || !this.archivoCancion) {
-      this.alert.warning('Campos incompletos', 'Por favor, completa todos los campos y selecciona una canción.');
+      this.alert.warning('Campos incompletos', 'Completa todos los campos y selecciona un archivo de audio.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('cantante', this.cancionForm.get('cantante')?.value);
-    formData.append('cancion', this.cancionForm.get('cancion')?.value);
-    formData.append('album', this.cancionForm.get('album')?.value);
-    formData.append('genero', this.cancionForm.get('genero')?.value);
-    formData.append('song', this.archivoCancion!);
-
-    if (this.archivoImagen) {
-      formData.append('imageCover', this.archivoImagen);
-    }
+    formData.append('cantante', this.cancionForm.get('cantante')!.value);
+    formData.append('cancion',  this.cancionForm.get('cancion')!.value);
+    formData.append('album',    this.cancionForm.get('album')!.value);
+    formData.append('genero',   this.cancionForm.get('genero')!.value);
+    formData.append('song', this.archivoCancion);
+    if (this.archivoImagen) formData.append('imageCover', this.archivoImagen);
 
     this.cargando = true;
-
     this.songService.subirCancion(formData).subscribe({
       next: () => {
-        this.alert.success('¡Canción subida!', 'La canción se publicó correctamente.')
+        this.cargando = false;
+        this.alert.success('¡Canción publicada!', 'Tu música ya está disponible en Auralis.')
           .then(() => this.router.navigate(['/home']));
         this.cancionForm.reset();
         this.archivoCancion = null;
         this.archivoImagen = null;
-        this.cargando = false;
+        this.nombreArchivo = '';
+        this.nombreImagen = '';
+        this.previewImagen = '';
       },
       error: () => {
-        this.alert.error('Error al subir', 'Hubo un problema al subir la canción. Intenta nuevamente.');
         this.cargando = false;
+        this.alert.error('Error al subir', 'Hubo un problema. Intenta nuevamente.');
       },
     });
   }
