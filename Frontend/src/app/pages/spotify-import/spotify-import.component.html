@@ -1,0 +1,122 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<div class="spotify-import-page">
+
+  <!-- Loading session -->
+  <div class="loading-overlay" *ngIf="loadingSession">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Not connected -->
+  <div class="connect-view" *ngIf="!loadingSession && !connected">
+    <div class="connect-card">
+      <div class="spotify-logo">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+        </svg>
+      </div>
+      <h1>Conecta tu cuenta de Spotify</h1>
+      <p>Importa tus playlists de Spotify directamente a Auralis. Tus canciones favoritas, aquí.</p>
+      <ul class="permisos">
+        <li>✓ Ver tus playlists</li>
+        <li>✓ Importar canciones a Auralis</li>
+        <li>✗ No accedemos a tu contraseña</li>
+        <li>✗ No modificamos tus playlists de Spotify</li>
+      </ul>
+      <button class="connect-btn" (click)="connectSpotify()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+        </svg>
+        Conectar con Spotify
+      </button>
+    </div>
+  </div>
+
+  <!-- Connected view -->
+  <div class="import-layout" *ngIf="!loadingSession && connected">
+
+    <!-- Playlists panel -->
+    <div class="playlists-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>Mis Playlists</span>
+          <span class="badge">{{ playlists.length }}</span>
+        </div>
+        <button class="disconnect-btn" (click)="disconnect()">Desconectar</button>
+      </div>
+
+      <div class="loading-row" *ngIf="loadingPlaylists">
+        <div class="spinner-sm"></div> Cargando playlists...
+      </div>
+
+      <div class="playlists-list" *ngIf="!loadingPlaylists">
+        <button
+          class="playlist-row"
+          *ngFor="let pl of playlists"
+          [class.selected]="selectedPlaylist?.id === pl.id"
+          (click)="selectPlaylist(pl)"
+        >
+          <div class="pl-cover">
+            <img *ngIf="pl.imagen" [src]="pl.imagen" [alt]="pl.nombre" />
+            <div *ngIf="!pl.imagen" class="pl-cover-placeholder">🎵</div>
+          </div>
+          <div class="pl-info">
+            <span class="pl-name">{{ pl.nombre }}</span>
+            <span class="pl-meta">{{ pl.total }} canciones</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tracks panel -->
+    <div class="tracks-panel">
+      <div class="tracks-empty" *ngIf="!selectedPlaylist">
+        <div class="tracks-empty-icon">👈</div>
+        <p>Selecciona una playlist para ver sus canciones</p>
+      </div>
+
+      <ng-container *ngIf="selectedPlaylist">
+        <div class="tracks-header">
+          <div class="tracks-header-info">
+            <img *ngIf="selectedPlaylist.imagen" [src]="selectedPlaylist.imagen" [alt]="selectedPlaylist.nombre" class="tracks-header-img" />
+            <div>
+              <h2>{{ selectedPlaylist.nombre }}</h2>
+              <p>{{ selectedPlaylist.total }} canciones · Por {{ selectedPlaylist.owner }}</p>
+            </div>
+          </div>
+          <button
+            class="import-btn"
+            (click)="importPlaylist()"
+            [disabled]="isImporting() || loadingTracks || tracks.length === 0"
+          >
+            <span *ngIf="!isImporting()">⬇ Importar a Auralis</span>
+            <span *ngIf="isImporting()">Importando...</span>
+          </button>
+        </div>
+
+        <div class="loading-row" *ngIf="loadingTracks">
+          <div class="spinner-sm"></div> Cargando canciones...
+        </div>
+
+        <div class="tracks-list" *ngIf="!loadingTracks">
+          <div class="track-row" *ngFor="let track of tracks; let i = index">
+            <span class="track-num">{{ i + 1 }}</span>
+            <img class="track-img" [src]="track.imagen || ''" [alt]="track.titulo" />
+            <div class="track-info">
+              <span class="track-title">{{ track.titulo }}</span>
+              <span class="track-artist">{{ track.artista }}</span>
+            </div>
+            <span class="track-duration">{{ formatDuration(track.duracionMs) }}</span>
+            <a *ngIf="track.externalUrl" [href]="track.externalUrl" target="_blank" class="spotify-link">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+  </div>
+</div>

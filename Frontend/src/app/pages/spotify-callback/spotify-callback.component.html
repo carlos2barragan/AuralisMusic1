@@ -1,0 +1,35 @@
+<div class="callback-page">
+  <div class="callback-card">
+
+    <div class="icon-wrap" [class.success]="status === 'success'" [class.error]="status === 'error'">
+      <!-- Loading spinner -->
+      <div class="spinner" *ngIf="status === 'loading'"></div>
+
+      <!-- Success icon -->
+      <svg *ngIf="status === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="36" height="36">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+
+      <!-- Error icon -->
+      <svg *ngIf="status === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="36" height="36">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M15 9l-6 6M9 9l6 6"/>
+      </svg>
+    </div>
+
+    <h1 *ngIf="status === 'loading'">Conectando con Spotify...</h1>
+    <h1 *ngIf="status === 'success'">¡Conectado!</h1>
+    <h1 *ngIf="status === 'error'">Error de conexión</h1>
+
+    <p>{{ message }}</p>
+
+    <p class="redirect-note" *ngIf="status === 'success'">
+      Redirigiendo a tus playlists...
+    </p>
+
+    <button class="retry-btn" *ngIf="status === 'error'" (click)="retry()">
+      Volver a intentar
+    </button>
+
+  </div>
+</div>

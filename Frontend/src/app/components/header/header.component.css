@@ -208,6 +208,62 @@
   transition: opacity 0.15s, transform 0.15s;
 }
 
+.hs-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(178,161,121,0.2);
+  border-top-color: #B2A179;
+  border-radius: 50%;
+  animation: hsSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes hsSpin { to { transform: rotate(360deg); } }
+
+.hs-section-label {
+  padding: 10px 16px 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(136,136,160,0.45);
+}
+.hs-spotify-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(29,185,84,0.7);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 2px;
+}
+.hs-artist-label { color: rgba(136,136,160,0.45); }
+
+.hs-spotify-item:hover { background: rgba(29,185,84,0.05); }
+.hs-spotify-fallback { background: rgba(29,185,84,0.08) !important; }
+
+.hs-preview-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #1DB954;
+  flex-shrink: 0;
+}
+
+.hs-spotify-play {
+  background: #1DB954 !important;
+  color: #000 !important;
+}
+.hs-ext-play {
+  background: rgba(136,136,160,0.12) !important;
+  color: rgba(200,200,220,0.7) !important;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hs-ext-play:hover { background: rgba(136,136,160,0.22) !important; color: #fff !important; }
+
+.hs-img-round { border-radius: 50% !important; }
+
+.hs-artist-item { opacity: 0.9; }
+
 .hs-empty {
   font-size: 13px;
   color: rgba(136,136,160,0.55);

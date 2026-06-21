@@ -34,7 +34,11 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   shuffleOn = false;
   repeatOn = false;
 
-  constructor(private songService: SongService, private router: Router, private userService: UserService) {}
+  constructor(
+    private songService: SongService,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     this.songSubscription = this.songService.currentSong$.subscribe(song => {
@@ -166,6 +170,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
         this.history.push(this.currentSong);
         this.currentSongIndex = this.history.length - 1;
       }
+
       this.currentSong = next;
       this.songService.setCurrentSong(next);
       this.playCurrentSong();
